@@ -1,0 +1,170 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:System="clr-namespace:System;assembly=mscorlib"
+                    xmlns:pc="clr-namespace:LordJZ.Presentation.Controls">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Resources/PrimaryStyles.xaml"/>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Resources/Converters.xaml"/>
+  </ResourceDictionary.MergedDictionaries>
+
+  <ControlTemplate x:Key="BaseWindowTitleBarButtonTemplate" TargetType="{x:Type Button}">
+    <Border Background="{TemplateBinding Background}">
+      <Image x:Name="PART_Icon" Opacity="{TemplateBinding Opacity}" Stretch="None"
+             Source="{TemplateBinding Content, Converter={StaticResource UriToImageSourceConverter}}"
+             VerticalAlignment="Center" HorizontalAlignment="Center"
+             RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    </Border>
+
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="{DynamicResource HoveredClickableControlBackgroundBrush}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Opacity" Value="1"/>
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="Background" Value="{DynamicResource PressedClickableControlBackgroundBrush}"/>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style x:Key="BaseWindowTitleBarButtonStyle" TargetType="Button">
+    <Style.Resources>
+      <System:Double x:Key="TitleBarHeightToWidthFactor">1.15</System:Double>
+    </Style.Resources>
+
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Opacity" Value="0.6"/>
+    <Setter Property="Template" Value="{StaticResource BaseWindowTitleBarButtonTemplate}"/>
+    <Setter Property="SnapsToDevicePixels" Value="True"/>
+    <Setter Property="Width">
+      <Setter.Value>
+        <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight"
+                 Converter="{StaticResource MultiplicationConverter}"
+                 ConverterParameter="{StaticResource TitleBarHeightToWidthFactor}"/>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <ControlTemplate x:Key="WindowTemplateKey" TargetType="{x:Type pc:BaseWindow}">
+    <Grid Background="{TemplateBinding Background}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+
+      <Grid x:Name="PART_TitleBar"
+            Background="{TemplateBinding TitleBarBackground}"
+            Height="{TemplateBinding TitleBarHeight}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Margin="3,0,0,0">
+          <ContentPresenter x:Name="PART_TitleBarContentPresenter"
+                            Content="{TemplateBinding TitleBarContent}"
+                            Visibility="Collapsed"/>
+          <StackPanel x:Name="PART_TitleBarDefaultContent"
+                      Orientation="Horizontal">
+            <Image Source="{TemplateBinding Icon}"/>
+            <TextBlock Text="{TemplateBinding Title}"
+                       VerticalAlignment="Center"/>
+          </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" FlowDirection="RightToLeft">
+          <Button Style="{DynamicResource BaseWindowTitleBarButtonStyle}"
+                  x:Name="PART_CloseButton"
+                  Content="/LordJZ.Presentation;component/Resources/TitleBarIcons/Close.png"
+                  ToolTip="{TemplateBinding CloseButtonToolTip}">
+            <Button.Visibility>
+              <TemplateBindingExtension Property="ShowCloseButton"
+                                        Converter="{StaticResource BooleanToVisibilityConverter}"/>
+            </Button.Visibility>
+          </Button>
+          <Button Style="{DynamicResource BaseWindowTitleBarButtonStyle}"
+                  x:Name="PART_MaximizeRestoreButton"
+                  Content="/LordJZ.Presentation;component/Resources/TitleBarIcons/Maximize.png"
+                  ToolTip="{TemplateBinding MaxButtonToolTip}">
+            <Button.Visibility>
+              <TemplateBindingExtension Property="ShowMaxRestoreButton"
+                                        Converter="{StaticResource BooleanToVisibilityConverter}"/>
+            </Button.Visibility>
+          </Button>
+          <Button Style="{DynamicResource BaseWindowTitleBarButtonStyle}"
+                  x:Name="PART_MinimizeButton"
+                  Content="/LordJZ.Presentation;component/Resources/TitleBarIcons/Minimize.png"
+                  ToolTip="{TemplateBinding MinButtonToolTip}">
+            <Button.Visibility>
+              <TemplateBindingExtension Property="ShowMinButton"
+                                        Converter="{StaticResource BooleanToVisibilityConverter}"/>
+            </Button.Visibility>
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <Border Grid.RowSpan="2" x:Name="PART_Border"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"/>
+
+      <ContentPresenter Grid.Row="1" Margin="2"/>
+
+      <ResizeGrip Grid.Row="1" x:Name="WindowResizeGrip" IsTabStop="false" Visibility="Collapsed"
+                  HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+    </Grid>
+
+    <ControlTemplate.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="ResizeMode" Value="CanResizeWithGrip"/>
+          <Condition Property="WindowState" Value="Normal"/>
+        </MultiTrigger.Conditions>
+        <Setter Property="Visibility" TargetName="WindowResizeGrip" Value="Visible"/>
+      </MultiTrigger>
+
+      <!-- Window is maximized -->
+      <Trigger Property="WindowState" Value="Maximized">
+        <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed"/>
+
+        <!-- Maximize/Restore button behavior -->
+        <Setter TargetName="PART_MaximizeRestoreButton" Property="Content"
+                Value="/LordJZ.Presentation;component/Resources/TitleBarIcons/Restore.png"/>
+        <Setter TargetName="PART_MaximizeRestoreButton" Property="ToolTip"
+                Value="{Binding Path=RestoreButtonToolTip,
+                                RelativeSource={RelativeSource TemplatedParent},
+                                Mode=OneWay}"/>
+      </Trigger>
+
+      <Trigger SourceName="PART_CloseButton" Property="IsMouseOver" Value="True">
+        <Setter TargetName="PART_CloseButton" Property="Content"
+                Value="/LordJZ.Presentation;component/Resources/TitleBarIcons/CloseActive.png"/>
+      </Trigger>
+
+      <Trigger Property="HasTitleBarContent" Value="True">
+        <Setter TargetName="PART_TitleBarDefaultContent" Property="Visibility" Value="Collapsed"/>
+        <Setter TargetName="PART_TitleBarContentPresenter" Property="Visibility" Value="Visible"/>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <System:Double x:Key="WindowTitleBarHeight">24</System:Double>
+  <SolidColorBrush x:Key="WindowTitleBarBackgroundBrush">LightGray</SolidColorBrush>
+  <SolidColorBrush x:Key="WindowBackground">#F0F0F0</SolidColorBrush>
+  <SolidColorBrush x:Key="WindowBorderBrush">#B8B8B8</SolidColorBrush>
+  <Thickness x:Key="WindowBorderThickness">1</Thickness>
+
+  <Style x:Key="DefaultBaseWindowStyle" TargetType="{x:Type pc:BaseWindow}">
+    <Setter Property="TitleBarHeight" Value="{DynamicResource WindowTitleBarHeight}"/>
+    <Setter Property="TitleBarBackground" Value="{DynamicResource WindowTitleBarBackgroundBrush}"/>
+    <Setter Property="Background" Value="{DynamicResource WindowBackground}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderBrush}"/>
+    <Setter Property="BorderThickness" Value="{DynamicResource WindowBorderThickness}"/>
+    <Setter Property="Template" Value="{StaticResource WindowTemplateKey}"/>
+    <Setter Property="MinWidth" Value="120"/>
+    <Setter Property="MinHeight" Value="40"/>
+  </Style>
+
+  <Style x:Key="{x:Type pc:BaseWindow}" TargetType="{x:Type pc:BaseWindow}"
+         BasedOn="{StaticResource DefaultBaseWindowStyle}"/>
+
+</ResourceDictionary>

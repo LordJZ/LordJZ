@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style x:Key="BaseControlStyle">
+    <Setter Property="Control.FontSize" Value="{DynamicResource NormalFontSize}"/>
+    <Setter Property="Control.FontFamily" Value="{DynamicResource DefaultFont}"/>
+    <Setter Property="Control.Foreground" Value="{DynamicResource TextBrush}"/>
+    <Setter Property="TextBlock.FontSize" Value="{DynamicResource NormalFontSize}"/>
+    <Setter Property="TextBlock.FontFamily" Value="{DynamicResource DefaultFont}"/>
+    <Setter Property="TextBlock.Foreground" Value="{DynamicResource TextBrush}"/>
+    <Setter Property="TextBoxBase.SelectionOpacity" Value="0.3"/>
+    <Setter Property="TextBoxBase.SelectionBrush" Value="{DynamicResource TextSelectionBrush}"/>
+  </Style>
+
+  <Style TargetType="Control" BasedOn="{StaticResource BaseControlStyle}"/>
+  <Style TargetType="TextBlock" BasedOn="{StaticResource BaseControlStyle}"/>
+
+  <Style x:Key="ContentStyle" BasedOn="{StaticResource BaseControlStyle}">
+    <Setter Property="Control.FontFamily" Value="{DynamicResource ContentFontFamily}"/>
+    <Setter Property="Control.FontSize" Value="{DynamicResource ContentFontSize}"/>
+    <Setter Property="TextBlock.FontFamily" Value="{DynamicResource ContentFontFamily}"/>
+    <Setter Property="TextBlock.FontSize" Value="{DynamicResource ContentFontSize}"/>
+  </Style>
+
+  <Style x:Key="HeaderStyle" BasedOn="{StaticResource BaseControlStyle}">
+    <Setter Property="Control.FontFamily" Value="{DynamicResource HeaderFontFamily}"/>
+    <Setter Property="Control.FontSize" Value="{DynamicResource SubHeaderFontSize}"/>
+    <Setter Property="TextBlock.FontFamily" Value="{DynamicResource HeaderFontFamily}"/>
+    <Setter Property="TextBlock.FontSize" Value="{DynamicResource SubHeaderFontSize}"/>
+  </Style>
+
+  <Style x:Key="BigHeaderStyle" BasedOn="{StaticResource BaseControlStyle}">
+    <Setter Property="Control.FontFamily" Value="{DynamicResource HeaderFontFamily}"/>
+    <Setter Property="Control.FontSize" Value="{DynamicResource HeaderFontSize}"/>
+    <Setter Property="TextBlock.FontFamily" Value="{DynamicResource HeaderFontFamily}"/>
+    <Setter Property="TextBlock.FontSize" Value="{DynamicResource HeaderFontSize}"/>
+  </Style>
+
+</ResourceDictionary>

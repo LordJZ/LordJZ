@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:Converters="clr-namespace:LordJZ.Presentation.Converters">
+  <Converters:AdvancedFormatConverter x:Key="AdvancedFormatConverter"/>
+  <Converters:StringFormatConverter x:Key="StringFormatConverter"/>
+  <Converters:MultiplicationConverter x:Key="MultiplicationConverter"/>
+  <Converters:UriToImageSourceConverter x:Key="UriToImageSourceConverter"/>
+  <Converters:ResourceStringConverter x:Key="ResourceStringConverter"/>
+  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+</ResourceDictionary>

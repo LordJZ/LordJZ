@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BCBF18DB-31A8-4553-BCBF-77D6C7790259}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LordJZ</RootNamespace>
+    <AssemblyName>LordJZ</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\LordJZ.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>False</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\LordJZ.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>False</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug No Contracts|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug No Contracts\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug No Contracts\LordJZ.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>False</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="Awaiter.cs" />
+    <Compile Include="BooleanBoxes.cs" />
+    <Compile Include="Collections\Contracts\ILongCollectionContract.cs" />
+    <Compile Include="Collections\EmptyArray.cs" />
+    <Compile Include="Collections\EmptyCollection.cs" />
+    <Compile Include="Collections\EmptyCollection`1.cs" />
+    <Compile Include="Collections\ILongCollection.cs" />
+    <Compile Include="EnumHelper.cs" />
+    <Compile Include="EnumMemberInfo.cs" />
+    <Compile Include="EnumOrString.cs" />
+    <Compile Include="IAwaitable.cs" />
+    <Compile Include="IAwaiter.cs" />
+    <Compile Include="IEnumMemberHelper.cs" />
+    <Compile Include="Linq\Enumerable.CombineSelectors.cs" />
+    <Compile Include="Linq\Enumerable.Select.cs" />
+    <Compile Include="Linq\Enumerable.ToList.cs" />
+    <Compile Include="Linq\Iterator.cs" />
+    <Compile Include="Collections\Proxies\CollectionProxyKind.cs" />
+    <Compile Include="Collections\Proxies\ReadOnlyCollectionProxy.cs" />
+    <Compile Include="Collections\Proxies\ReadOnlyListProxy.cs" />
+    <Compile Include="IOHelper.cs" />
+    <Compile Include="IObjectProxy.cs" />
+    <Compile Include="Collections\Proxies\CollectionProxy.cs" />
+    <Compile Include="Collections\Proxies\EnumerableProxy.cs" />
+    <Compile Include="Collections\Proxies\ListProxy.cs" />
+    <Compile Include="Linq\Enumerable.cs" />
+    <Compile Include="Linq\Enumerable.ForEach.cs" />
+    <Compile Include="Linq\Enumerable.ToArray.cs" />
+    <Compile Include="Linq\SelectCollectionIterator.cs" />
+    <Compile Include="Linq\SelectEnumerableIterator.cs" />
+    <Compile Include="Linq\SelectListIterator.cs" />
+    <Compile Include="Linq\SelectReadOnlyCollectionIterator.cs" />
+    <Compile Include="Linq\SelectReadOnlyListIterator.cs" />
+    <Compile Include="Linq\NullAllowed.cs" />
+    <Compile Include="Linq\NullCoalescing.AllowNull.cs" />
+    <Compile Include="Linq\NullCoalescing.cs" />
+    <Compile Include="Linq\NullCoalescing.From.cs" />
+    <Compile Include="Linq\NullCoalescing.Select.cs" />
+    <Compile Include="Linq\NullCoalescing.SelectNullable.cs" />
+    <Compile Include="Linq\TupleEx.Enumerate.cs" />
+    <Compile Include="Linq\Enumerable.MakeProxy.cs" />
+    <Compile Include="Linq\TupleEx.cs" />
+    <Compile Include="Linq\TupleEx.ToArray.cs" />
+    <Compile Include="NotifyPropertyChangedObject.cs" />
+    <Compile Include="AdvancedFormatExtensions.cs" />
+    <Compile Include="Collections\CollectionExtensions.cs" />
+    <Compile Include="Collections\CollectionModel.cs" />
+    <Compile Include="Collections\GenericCollectionModel.cs" />
+    <Compile Include="Collections\INotifyListItemRetrieved.cs" />
+    <Compile Include="Collections\ObservableList.cs" />
+    <Compile Include="DispatchedNotifyPropertyChangedObject.cs" />
+    <Compile Include="LazyWeak.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="ObjectManagement\AbstractSingletonXmlSerializableAsyncObjectAccessor.cs" />
+    <Compile Include="ObjectManagement\CannotLoadObjectException.cs" />
+    <Compile Include="ObjectManagement\CannotSaveObjectException.cs" />
+    <Compile Include="ObjectManagement\Contracts\IObjectAccessorContract.cs" />
+    <Compile Include="ObjectManagement\Contracts\IObjectDeleterContract.cs" />
+    <Compile Include="ObjectManagement\Contracts\IObjectFactoryContract.cs" />
+    <Compile Include="ObjectManagement\Contracts\IObjectLoaderContract.cs" />
+    <Compile Include="ObjectManagement\Contracts\IObjectSaverContract.cs" />
+    <Compile Include="ObjectManagement\IObjectAccessor.cs" />
+    <Compile Include="ObjectManagement\IObjectDeleter.cs" />
+    <Compile Include="ObjectManagement\IObjectFactory.cs" />
+    <Compile Include="ObjectManagement\IObjectLoader.cs" />
+    <Compile Include="ObjectManagement\IObjectSaver.cs" />
+    <Compile Include="ObjectManagement\SingletonAsyncObjectAccessor.cs" />
+    <Compile Include="ObjectManagement\SingletonXmlSerializableAsyncObjectAccessor.cs" />
+    <Compile Include="ObjectManagement\XmlSerializable.cs" />
+    <Compile Include="PlaneDirection.cs" />
+    <Compile Include="PlaneDirectionExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Singleton.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Threading\DispatchedEvent.cs" />
+    <Compile Include="Threading\DispatchedEventHelper.cs" />
+    <Compile Include="Threading\DispatcherMgr.cs" />
+    <Compile Include="Threading\IDispatcher.cs" />
+    <Compile Include="Threading\DispatcherExtensions.cs" />
+    <Compile Include="Threading\RWLockSlimExtensions.cs" />
+    <Compile Include="Threading\RWLockSlimGuards.cs" />
+    <Compile Include="ValueTuple.cs" />
+    <Compile Include="WaitPoint.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="InpcProperty.snippet" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

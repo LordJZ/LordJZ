@@ -1,0 +1,54 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:Controls="clr-namespace:LordJZ.Presentation.Controls">
+
+  <ControlTemplate x:Key="IconTemplate" TargetType="Controls:Icon">
+    <Viewbox x:Name="PART_Grid" SnapsToDevicePixels="True">
+      <Canvas x:Name="PART_Canvas" Width="48" Height="48">
+        <Ellipse x:Name="PART_Background"
+                 Width="48" Height="48"
+                 Fill="{TemplateBinding Background}"
+                 Opacity="{TemplateBinding BackgroundOpacity}"/>
+        <Ellipse x:Name="PART_Circle"
+                 Width="48" Height="48"
+                 Stroke="{TemplateBinding Background}" StrokeThickness="2"/>
+        <Rectangle x:Name="PART_Rect" Width="48" Height="48"
+                   Fill="{TemplateBinding Foreground}"
+                   SnapsToDevicePixels="True">
+          <Rectangle.OpacityMask>
+            <VisualBrush x:Name="PART_OpacityBrush" Stretch="None">
+              <VisualBrush.Visual>
+                <Binding Path="DisplayedIcon" Mode="OneWay"
+                         RelativeSource="{RelativeSource TemplatedParent}"/>
+              </VisualBrush.Visual>
+            </VisualBrush>
+          </Rectangle.OpacityMask>
+        </Rectangle>
+        <ContentPresenter x:Name="PART_IconContent"/>
+      </Canvas>
+    </Viewbox>
+    <ControlTemplate.Triggers>
+      <Trigger Property="ShowBackground" Value="False">
+        <Setter TargetName="PART_Background" Property="Visibility" Value="Collapsed"/>
+      </Trigger>
+      <Trigger Property="ShowCircle" Value="False">
+        <Setter TargetName="PART_Circle" Property="Visibility" Value="Collapsed"/>
+      </Trigger>
+      <Trigger Property="IconSize" Value="Tiny">
+        <Setter TargetName="PART_Rect" Property="Width" Value="28"/>
+        <Setter TargetName="PART_Rect" Property="Height" Value="28"/>
+        <Setter TargetName="PART_Canvas" Property="Width" Value="28"/>
+        <Setter TargetName="PART_Canvas" Property="Height" Value="28"/>
+        <!--<Setter TargetName="PART_Rect" Property="Canvas.Left" Value="10"/>
+        <Setter TargetName="PART_Rect" Property="Canvas.Top" Value="10"/>-->
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style TargetType="Controls:Icon">
+    <Setter Property="IsTabStop" Value="False"/>
+    <Setter Property="Background" Value="{DynamicResource TextBrush}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+    <Setter Property="Template" Value="{StaticResource IconTemplate}"/>
+  </Style>
+</ResourceDictionary>

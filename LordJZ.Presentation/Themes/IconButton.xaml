@@ -1,0 +1,97 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:LordJZ.Presentation.Controls">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Resources/PrimaryStyles.xaml"/>
+  </ResourceDictionary.MergedDictionaries>
+
+  <Style x:Key="DefaultIconButtonStyle" TargetType="local:IconButton">
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="local:IconButton">
+          <local:Icon x:Name="PART_Icon" Foreground="{TemplateBinding Foreground}"/>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="{x:Type local:IconButton}" TargetType="{x:Type local:IconButton}"
+         BasedOn="{StaticResource DefaultIconButtonStyle}">
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="ShowBackground" Value="True"/>
+        <Setter Property="BackgroundOpacity" Value="0.3"/>
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter Property="ShowBackground" Value="True"/>
+        <Setter Property="BackgroundOpacity" Value="1"/>
+        <Setter Property="Foreground"
+                      Value="{DynamicResource PressedIconBrush}"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="TinyIconButtonStyle" TargetType="local:IconButton"
+         BasedOn="{StaticResource DefaultIconButtonStyle}">
+    <Setter Property="Opacity" Value="0.5"/>
+    <Setter Property="IconSize" Value="Tiny"/>
+    <Setter Property="ShowCircle" Value="False"/>
+    <Setter Property="ShowBackground" Value="False"/>
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Opacity" Value="1"/>
+      </Trigger>
+      <!--<Trigger Property="IsPressed" Value="True">
+      </Trigger>-->
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="TinyRedIconButtonStyle" TargetType="local:IconButton"
+         BasedOn="{StaticResource TinyIconButtonStyle}">
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Foreground" Value="Red"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="BigIconButtonStyle" TargetType="local:IconButton"
+         BasedOn="{StaticResource BaseControlStyle}">
+    <Setter Property="SnapsToDevicePixels" Value="True"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="MinHeight" Value="34"/>
+    <Setter Property="MinWidth" Value="80"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="IconSize" Value="Small"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="local:IconButton">
+          <Border x:Name="PART_Border" Background="Transparent">
+            <StackPanel Margin="9,0,12,0" Orientation="Horizontal" VerticalAlignment="Center"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+              <local:Icon x:Name="PART_Icon" Margin="0,0,4,0"/>
+              <ContentPresenter x:Name="PART_ContentPresenter" RecognizesAccessKey="True"
+                                VerticalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="PART_Border" Property="Background"
+                      Value="{DynamicResource HoveredClickableControlBackgroundBrush}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="PART_Border" Property="Background"
+                      Value="{DynamicResource PressedClickableControlBackgroundBrush}"/>
+              <Setter TargetName="PART_Icon" Property="ShowBackground" Value="True"/>
+              <Setter TargetName="PART_Icon" Property="Foreground"
+                      Value="{DynamicResource PressedIconBrush}"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

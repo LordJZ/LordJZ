@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Resources/PrimaryStyles.xaml"/>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Resources/Converters.xaml"/>
+
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Themes/BaseWindow.xaml"/>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Themes/Icon.xaml"/>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Themes/IconButton.xaml"/>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Themes/MetroContentControl.xaml"/>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Themes/ProgressRing.xaml"/>
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Themes/TransitioningContentControl.xaml"/>
+
+    <ResourceDictionary Source="/LordJZ.Presentation;component/Resources/Icons.xaml"/>
+  </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
