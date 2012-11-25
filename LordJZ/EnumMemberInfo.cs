@@ -1,10 +1,15 @@
 ﻿
+using System.Diagnostics.Contracts;
+
 namespace LordJZ
 {
-    public class EnumMemberInfo<T> : IEnumMemberHelper
+    public class EnumMemberInfo<T> : IEnumMemberInfo
     {
         public EnumMemberInfo(string name, object value, T member)
         {
+            Contract.Requires(!string.IsNullOrEmpty(name));
+            Contract.Requires(value != null);
+
             this.Name = name;
             this.Value = member;
             this.BoxedValue = value;
@@ -14,7 +19,7 @@ namespace LordJZ
         public T Value { get; private set; }
         public object BoxedValue { get; private set; }
 
-        object IEnumMemberHelper.Value
+        object IEnumMemberInfo.Value
         {
             get { return this.BoxedValue; }
         }

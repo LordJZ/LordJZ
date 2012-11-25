@@ -27,11 +27,13 @@ namespace LordJZ
         {
             get
             {
+                Contract.Ensures(Contract.Result<T>() != null);
+
                 var target = (T)base.Target;
                 if (target == null)
                 {
                     target = m_factory();
-                    Contract.Assert(target != null);
+                    Contract.Assume(target != null);
                     base.Target = target;
                 }
 

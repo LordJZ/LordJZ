@@ -22,11 +22,18 @@ namespace LordJZ
 
         public static T[] Values
         {
-            get { return s_valuesLazy.Target; }
+            get
+            {
+                Contract.Ensures(Contract.Result<T[]>() != null);
+
+                return s_valuesLazy.Target;
+            }
         }
 
         static T[] GetValues()
         {
+            Contract.Ensures(Contract.Result<T[]>() != null);
+
             EnumMemberInfo<T>[] members;
             if (s_membersLazy.TryGetTarget(out members))
                 return members.Select(member => member.Value).ToArray();
@@ -41,11 +48,18 @@ namespace LordJZ
 
         public static EnumMemberInfo<T>[] Members
         {
-            get { return s_membersLazy.Target; }
+            get
+            {
+                Contract.Ensures(Contract.Result<EnumMemberInfo<T>[]>() != null);
+
+                return s_membersLazy.Target;
+            }
         }
 
         static EnumMemberInfo<T>[] GetMembers()
         {
+            Contract.Ensures(Contract.Result<EnumMemberInfo<T>[]>() != null);
+
             return Enum.GetValues(typeof(T))
                 .Cast<object>()
                 .Select(boxed => new EnumMemberInfo<T>(boxed.ToString(), boxed, (T)boxed))

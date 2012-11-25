@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.Contracts;
 
 namespace LordJZ.Collections
 {
@@ -14,7 +15,12 @@ namespace LordJZ.Collections
 
         public static EmptyCollection Instance
         {
-            get { return s_instance ?? (s_instance = new EmptyCollection()); }
+            get
+            {
+                Contract.Ensures(Contract.Result<EmptyCollection>() != null);
+
+                return s_instance ?? (s_instance = new EmptyCollection());
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

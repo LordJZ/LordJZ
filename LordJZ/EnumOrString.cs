@@ -47,9 +47,12 @@ namespace LordJZ
 
         static void GetValuesAndNames(out ulong[] values, out string[] names, bool getValues, bool getNames)
         {
-            Contract.Ensures(!getValues || values != null);
-            Contract.Ensures(!getNames || names != null);
-            Contract.Ensures(!getValues || !getNames || values.Length == names.Length);
+            Contract.Ensures(!getValues || Contract.ValueAtReturn(out values) != null);
+            Contract.Ensures(!getNames || Contract.ValueAtReturn(out names) != null);
+            Contract.Ensures(
+                !getValues || !getNames ||
+                Contract.ValueAtReturn(out values).Length == Contract.ValueAtReturn(out names).Length
+                );
 
             object[] parameters =
             {
@@ -83,7 +86,7 @@ namespace LordJZ
 
         public EnumOrString(string stringValue)
         {
-            Contract.Requires(!string.IsNullOrWhiteSpace(stringValue));
+            Contract.Requires(!string.IsNullOrEmpty(stringValue));
 
             ulong[] values;
             string[] names;
@@ -145,7 +148,12 @@ namespace LordJZ
         /// </summary>
         public string String
         {
-            get { return m_string ?? m_enum.ToString(); }
+            get
+            {
+                Contract.Ensures(!String.IsNullOrEmpty(Contract.Result<string>()));
+
+                return m_string ?? m_enum.ToString();
+            }
         }
 
         /// <summary>
@@ -235,6 +243,8 @@ namespace LordJZ
 
         public static implicit operator string(EnumOrString<T> operand)
         {
+            Contract.Ensures(!String.IsNullOrEmpty(Contract.Result<string>()));
+
             return operand.String;
         }
 

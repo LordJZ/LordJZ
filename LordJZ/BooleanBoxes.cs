@@ -10,6 +10,8 @@ namespace LordJZ
         [Pure]
         public static object Box(bool value)
         {
+            Contract.Ensures(Contract.Result<object>() != null);
+
             return value ? True : False;
         }
     }

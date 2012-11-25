@@ -18,7 +18,8 @@ namespace LordJZ.ObjectManagement.Contracts
 
     [ContractClassFor(typeof(IObjectFactory<>))]
     [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-    internal abstract class IObjectFactoryContract<TObject> : IObjectFactory<TObject> where TObject : class
+    internal abstract class IObjectFactoryContract<TObject>
+        : IObjectFactory<TObject> where TObject : class
     {
         TObject IObjectFactory<TObject>.Create()
         {
@@ -32,7 +33,8 @@ namespace LordJZ.ObjectManagement.Contracts
 
     [ContractClassFor(typeof(IAsyncObjectFactory<>))]
     [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-    internal abstract class IAsyncObjectFactoryContract<TObject> : IAsyncObjectFactory<TObject> where TObject : class
+    internal abstract class IAsyncObjectFactoryContract<TObject>
+        : IAsyncObjectFactory<TObject> where TObject : class
     {
         Task<TObject> IAsyncObjectFactory<TObject>.AsyncCreate()
         {

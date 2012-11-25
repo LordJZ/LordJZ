@@ -70,13 +70,7 @@ namespace LordJZ.WinAPI
 
         #endregion
 
-        [Pure]
-        public IntPtr ToIntPtr()
-        {
-            return m_handle;
-        }
-
-        internal IntPtr IntPtr
+        public IntPtr Value
         {
             get { return m_handle; }
         }

@@ -129,7 +129,7 @@ namespace LordJZ.WinAPI
         /// <filterpriority>1</filterpriority>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            long read = Process.ReadProcessMemory(m_handle.IntPtr, new IntPtr(m_position),
+            long read = Process.ReadProcessMemory(m_handle.Value, new IntPtr(m_position),
                                                   buffer, offset, count);
 
             m_position += read;
@@ -156,7 +156,7 @@ namespace LordJZ.WinAPI
         /// <filterpriority>1</filterpriority>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            long written = Process.WriteProcessMemory(m_handle.IntPtr, new IntPtr(m_position),
+            long written = Process.WriteProcessMemory(m_handle.Value, new IntPtr(m_position),
                                                       buffer, offset, count);
 
             m_position += written;

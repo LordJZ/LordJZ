@@ -33,6 +33,7 @@ namespace LordJZ.Linq
         {
             Contract.Requires(enumerable != null);
             Contract.Requires(selector != null);
+            Contract.Ensures(Contract.Result<IEnumerable<TResult>>() != null);
 
             if (enumerable is EmptyCollection<T>)
                 return EmptyCollection<TResult>.Instance;

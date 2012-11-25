@@ -22,7 +22,7 @@ namespace LordJZ.Collections.Contracts
         {
             get
             {
-                Contract.Ensures(Contract.Result<long>() >= 0L);
+                Contract.Ensures(Contract.Result<long>() >= 0);
 
                 return default(long);
             }

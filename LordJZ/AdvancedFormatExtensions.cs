@@ -257,8 +257,10 @@ namespace LordJZ
         public static StringBuilder AppendAdvancedFormat(this StringBuilder builder,
             IFormatProvider provider, string format, params object[] args)
         {
+            Contract.Requires(builder != null);
             Contract.Requires(format != null, "format");
             Contract.Requires(args != null, "args");
+            Contract.Ensures(Contract.Result<StringBuilder>() != null);
 
             int i = 0;
             int length = format.Length;
@@ -441,6 +443,7 @@ namespace LordJZ
         {
             Contract.Requires(format != null, "format");
             Contract.Requires(args != null, "args");
+            Contract.Ensures(Contract.Result<string>() != null);
 
             var builder = new StringBuilder(format.Length + args.Length * 8);
             builder.AppendAdvancedFormat(provider, format, args);
@@ -451,6 +454,7 @@ namespace LordJZ
         {
             Contract.Requires(format != null, "format");
             Contract.Requires(args != null, "args");
+            Contract.Ensures(Contract.Result<string>() != null);
 
             return AdvancedFormat(provider, format, args);
         }
@@ -459,6 +463,7 @@ namespace LordJZ
         {
             Contract.Requires(format != null, "format");
             Contract.Requires(args != null, "args");
+            Contract.Ensures(Contract.Result<string>() != null);
 
             return AdvancedFormat(null, format, args);
         }

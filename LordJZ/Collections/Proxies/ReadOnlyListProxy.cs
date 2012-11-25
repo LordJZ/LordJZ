@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LordJZ.ObjectManagement;
 
 namespace LordJZ.Collections.Proxies
 {

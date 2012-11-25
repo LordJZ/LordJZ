@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.Contracts;
+using LordJZ.Threading.Contracts;
 
-namespace LordJZ
+namespace LordJZ.Threading
 {
+    [ContractClass(typeof(IAwaitableContract))]
     public interface IAwaitable : IAwaiter
     {
         IAwaiter GetAwaiter();
     }
 
+    [ContractClass(typeof(IAwaitableContract<>))]
     public interface IAwaitable<out T> : IAwaitable, IAwaiter<T>
     {
         new IAwaiter<T> GetAwaiter();

@@ -21,14 +21,13 @@ namespace LordJZ
         }
 
         /// <summary>
-        /// Raises the <see cref="DispatchedNotifyPropertyChangedObject.PropertyChanged"/> event.
+        /// Raises the <see cref="NotifyPropertyChangedObject.PropertyChanged"/> event.
         /// </summary>
         /// <param name="propertyName">
         /// The name of the property that changed.
         /// </param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            Contract.Requires(propertyName != null, "propertyName");
             Contract.Requires(!string.IsNullOrWhiteSpace(propertyName), "propertyName");
 
             var handler = this.PropertyChanged;

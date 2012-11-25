@@ -138,7 +138,6 @@ namespace LordJZ
 
         public static async Task<string> AsyncReadFile(string path)
         {
-            Contract.Requires(path != null);
             Contract.Requires(!string.IsNullOrWhiteSpace(path));
 
             return await AsyncIOOperation(() => File.ReadAllText(path));
@@ -146,7 +145,6 @@ namespace LordJZ
 
         public static async Task AsyncWriteFile(string path, string contents)
         {
-            Contract.Requires(path != null);
             Contract.Requires(!string.IsNullOrWhiteSpace(path));
             Contract.Requires(contents != null);
 
@@ -155,7 +153,6 @@ namespace LordJZ
 
         public static async Task AsyncWriteFile(string path, byte[] contents)
         {
-            Contract.Requires(path != null);
             Contract.Requires(!string.IsNullOrWhiteSpace(path));
             Contract.Requires(contents != null);
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 
-namespace LordJZ
+namespace LordJZ.Threading
 {
     public sealed class WaitPoint : IAwaitable
     {
@@ -11,7 +11,6 @@ namespace LordJZ
 
         public void GetResult()
         {
-            Contract.Requires(this.IsCompleted);
         }
 
         IAwaiter IAwaitable.GetAwaiter()
@@ -29,8 +28,8 @@ namespace LordJZ
 
                 this.IsCompleted = true;
 
-                Action onComplete = m_onComplete;
-                m_onComplete = onComplete;
+                Action onComplete = this.m_onComplete;
+                this.m_onComplete = onComplete;
 
                 if (onComplete != null)
                     onComplete();
@@ -50,15 +49,13 @@ namespace LordJZ
 
         public void OnCompleted(Action action)
         {
-            Contract.Requires(action != null);
-
             bool isComplete;
 
             lock (this)
             {
                 isComplete = this.IsCompleted;
                 if (!isComplete)
-                    m_onComplete += action;
+                    this.m_onComplete += action;
             }
 
             if (isComplete)
@@ -75,14 +72,11 @@ namespace LordJZ
 
         public T GetResult()
         {
-            Contract.Requires(this.IsCompleted);
-
-            return m_value;
+            return this.m_value;
         }
 
         void IAwaiter.GetResult()
         {
-            Contract.Requires(this.IsCompleted);
         }
 
         IAwaiter IAwaitable.GetAwaiter()
@@ -98,11 +92,11 @@ namespace LordJZ
             {
                 Contract.Assert(!this.IsCompleted);
 
-                m_value = value;
+                this.m_value = value;
                 this.IsCompleted = true;
 
-                Action onComplete = m_onComplete;
-                m_onComplete = onComplete;
+                Action onComplete = this.m_onComplete;
+                this.m_onComplete = onComplete;
 
                 if (onComplete != null)
                     onComplete();
@@ -119,7 +113,7 @@ namespace LordJZ
             lock (this)
             {
                 this.IsCompleted = false;
-                m_value = default(T);
+                this.m_value = default(T);
             }
         }
 
@@ -130,15 +124,13 @@ namespace LordJZ
 
         public void OnCompleted(Action action)
         {
-            Contract.Requires(action != null);
-
             bool isComplete;
 
             lock (this)
             {
                 isComplete = this.IsCompleted;
                 if (!isComplete)
-                    m_onComplete += action;
+                    this.m_onComplete += action;
             }
 
             if (isComplete)

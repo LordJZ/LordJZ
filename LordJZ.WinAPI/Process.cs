@@ -41,7 +41,7 @@ namespace LordJZ.WinAPI
         {
             get
             {
-                int id = UnsafeNativeMethods.GetProcessId(m_handle.IntPtr);
+                int id = UnsafeNativeMethods.GetProcessId(m_handle.Value);
                 Win32Error.EnsureNoWin32Error(id != 0);
                 return id;
             }
@@ -52,7 +52,7 @@ namespace LordJZ.WinAPI
             get
             {
                 bool result;
-                UnsafeNativeMethods.IsWow64Process(m_handle.IntPtr, out result)
+                UnsafeNativeMethods.IsWow64Process(m_handle.Value, out result)
                                    .EnsureNoWin32Error();
                 return result;
             }
@@ -75,13 +75,13 @@ namespace LordJZ.WinAPI
 
         public int ReadMemory(IntPtr position, byte[] buffer, int offset, int count)
         {
-            long read = ReadProcessMemory(m_handle.IntPtr, position, buffer, offset, count);
+            long read = ReadProcessMemory(m_handle.Value, position, buffer, offset, count);
             return checked((int)read);
         }
 
         public int WriteMemory(IntPtr position, byte[] buffer, int offset, int count)
         {
-            long written = WriteProcessMemory(m_handle.IntPtr, position, buffer, offset, count);
+            long written = WriteProcessMemory(m_handle.Value, position, buffer, offset, count);
             return checked((int)written);
         }
 
@@ -146,7 +146,7 @@ namespace LordJZ.WinAPI
 
         public void Terminate(int exitCode)
         {
-            UnsafeNativeMethods.TerminateProcess(m_handle.IntPtr, (uint)exitCode)
+            UnsafeNativeMethods.TerminateProcess(m_handle.Value, (uint)exitCode)
                                .EnsureNoWin32Error();
         }
 
@@ -170,7 +170,7 @@ namespace LordJZ.WinAPI
             {
                 uint exitCode;
 
-                UnsafeNativeMethods.GetExitCodeProcess(m_handle.IntPtr, out exitCode)
+                UnsafeNativeMethods.GetExitCodeProcess(m_handle.Value, out exitCode)
                                    .EnsureNoWin32Error();
 
                 return (int)exitCode;
@@ -187,7 +187,7 @@ namespace LordJZ.WinAPI
             int nAllocSpace = checked(nAllocModules * IntPtr.Size);
             int nSpace;
 
-            IntPtr hProcess = m_handle.IntPtr;
+            IntPtr hProcess = m_handle.Value;
 
             bool result;
             fixed (IntPtr* pArray = array)

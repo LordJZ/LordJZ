@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using LordJZ.Threading.Contracts;
 
-namespace LordJZ
+namespace LordJZ.Threading
 {
+    [ContractClass(typeof(IAwaiterContract))]
     public interface IAwaiter : INotifyCompletion
     {
         bool IsCompleted { get; }
@@ -14,6 +12,7 @@ namespace LordJZ
         void GetResult();
     }
 
+    [ContractClass(typeof(IAwaiterContract<>))]
     public interface IAwaiter<out T> : IAwaiter
     {
         new T GetResult();

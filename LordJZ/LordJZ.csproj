@@ -152,7 +152,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrayExtensions.cs" />
-    <Compile Include="Awaiter.cs" />
+    <Compile Include="Contracts\IEnumMemberInfoContract.cs" />
+    <Compile Include="Threading\Awaiter.cs" />
     <Compile Include="BooleanBoxes.cs" />
     <Compile Include="Collections\Contracts\ILongCollectionContract.cs" />
     <Compile Include="Collections\EmptyArray.cs" />
@@ -162,9 +163,12 @@
     <Compile Include="EnumHelper.cs" />
     <Compile Include="EnumMemberInfo.cs" />
     <Compile Include="EnumOrString.cs" />
-    <Compile Include="IAwaitable.cs" />
-    <Compile Include="IAwaiter.cs" />
-    <Compile Include="IEnumMemberHelper.cs" />
+    <Compile Include="Threading\Contracts\IAwaitableContract.cs" />
+    <Compile Include="Threading\Contracts\IAwaiterContract.cs" />
+    <Compile Include="Threading\Contracts\INotifyCompletionContract.cs" />
+    <Compile Include="Threading\IAwaitable.cs" />
+    <Compile Include="Threading\IAwaiter.cs" />
+    <Compile Include="IEnumMemberInfo.cs" />
     <Compile Include="Linq\Enumerable.CombineSelectors.cs" />
     <Compile Include="Linq\Enumerable.Select.cs" />
     <Compile Include="Linq\Enumerable.ToList.cs" />
@@ -173,7 +177,7 @@
     <Compile Include="Collections\Proxies\ReadOnlyCollectionProxy.cs" />
     <Compile Include="Collections\Proxies\ReadOnlyListProxy.cs" />
     <Compile Include="IOHelper.cs" />
-    <Compile Include="IObjectProxy.cs" />
+    <Compile Include="ObjectManagement\IObjectProxy.cs" />
     <Compile Include="Collections\Proxies\CollectionProxy.cs" />
     <Compile Include="Collections\Proxies\EnumerableProxy.cs" />
     <Compile Include="Collections\Proxies\ListProxy.cs" />
@@ -234,7 +238,7 @@
     <Compile Include="Threading\RWLockSlimExtensions.cs" />
     <Compile Include="Threading\RWLockSlimGuards.cs" />
     <Compile Include="ValueTuple.cs" />
-    <Compile Include="WaitPoint.cs" />
+    <Compile Include="Threading\WaitPoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="InpcProperty.snippet" />

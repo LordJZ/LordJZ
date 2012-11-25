@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LordJZ.ObjectManagement;
 
 namespace LordJZ.Collections.Proxies
 {
@@ -34,7 +35,7 @@ namespace LordJZ.Collections.Proxies
 
         object IObjectProxy.ProxifiedObject
         {
-            get { return ProxifiedObject; }
+            get { return this.ProxifiedObject; }
         }
 
         public IReadOnlyCollection<T> ProxifiedObject { get { return m_collection; } }
