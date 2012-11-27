@@ -23,6 +23,8 @@ namespace LordJZ.Threading
 
         public void OnCompleted(Action action)
         {
+            Contract.Assume(action != null);
+
             if (this.IsCompleted)
                 action();
             else
@@ -55,6 +57,8 @@ namespace LordJZ.Threading
 
         public void OnCompleted(Action action)
         {
+            Contract.Assume(action != null);
+
             if (this.IsCompleted)
                 action();
             else

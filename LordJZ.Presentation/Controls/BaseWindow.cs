@@ -20,7 +20,7 @@ namespace LordJZ.Presentation.Controls
     [TemplatePart(Name = PART_CloseButton, Type = typeof(Button))]
     [TemplatePart(Name = PART_MaximizeRestoreButton, Type = typeof(Button))]
     [TemplatePart(Name = PART_MinimizeButton, Type = typeof(Button))]
-    public class BaseWindow : Window
+    public class BaseWindow : Window, INativeWindowWrapper
     {
         const string PART_TitleBar = "PART_TitleBar";
         const string PART_Border = "PART_Border";
@@ -184,7 +184,9 @@ namespace LordJZ.Presentation.Controls
 
         #region IgnoreTaskbarOnMaximize
 
-        public static readonly DependencyProperty IgnoreTaskbarOnMaximizeProperty = DependencyProperty.Register("IgnoreTaskBar", typeof(bool), typeof(BaseWindow), new PropertyMetadata(BooleanBoxes.False));
+        public static readonly DependencyProperty IgnoreTaskbarOnMaximizeProperty =
+            DependencyProperty.Register("IgnoreTaskBar", typeof(bool), typeof(BaseWindow),
+                                        new PropertyMetadata(BooleanBoxes.False));
 
         public bool IgnoreTaskbarOnMaximize
         {
@@ -198,16 +200,16 @@ namespace LordJZ.Presentation.Controls
 
         #region Properties
 
-        IntPtr m_handle;
+        NativeWindow m_nativeWindow;
 
-        internal IntPtr Handle
+        public NativeWindow NativeWindow
         {
             get
             {
-                if (m_handle != IntPtr.Zero)
-                    return m_handle;
+                if (m_nativeWindow.Handle.Value != IntPtr.Zero)
+                    return m_nativeWindow;
 
-                return m_handle = this.GetWin32Handle();
+                return m_nativeWindow = this.GetNativeWindow();
             }
         }
 
@@ -239,18 +241,14 @@ namespace LordJZ.Presentation.Controls
 
             if (this.WindowState == WindowState.Maximized)
             {
-                IntPtr monitor = UnsafeNativeMethods.MonitorFromWindow(this.Handle, Constants.MONITOR_DEFAULTTONEAREST);
-                if (monitor != IntPtr.Zero)
-                {
-                    var monitorInfo = new MONITORINFO();
-                    UnsafeNativeMethods.GetMonitorInfo(monitor, monitorInfo);
-                    bool ignoreTaskBar = this.IgnoreTaskbarOnMaximize;
-                    var x = ignoreTaskBar ? monitorInfo.rcMonitor.left : monitorInfo.rcWork.left;
-                    var y = ignoreTaskBar ? monitorInfo.rcMonitor.top : monitorInfo.rcWork.top;
-                    var cx = ignoreTaskBar ? monitorInfo.rcWork.right : Math.Abs(monitorInfo.rcWork.right - x);
-                    var cy = ignoreTaskBar ? monitorInfo.rcMonitor.bottom : Math.Abs(monitorInfo.rcWork.bottom - y);
-                    UnsafeNativeMethods.SetWindowPos(this.Handle, new IntPtr(-2), x, y, cx, cy, 0x0040);
-                }
+                MonitorInfo monitorInfo = this.NativeWindow.GetMonitor(MonitorFallbackKind.Nearest);
+
+                bool ignoreTaskBar = this.IgnoreTaskbarOnMaximize;
+                var x = ignoreTaskBar ? monitorInfo.MonitorArea.Left : monitorInfo.WorkArea.Left;
+                var y = ignoreTaskBar ? monitorInfo.MonitorArea.Top : monitorInfo.WorkArea.Top;
+                var cx = ignoreTaskBar ? monitorInfo.WorkArea.Right : Math.Abs(monitorInfo.WorkArea.Right - x);
+                var cy = ignoreTaskBar ? monitorInfo.MonitorArea.Bottom : Math.Abs(monitorInfo.WorkArea.Bottom - y);
+                UnsafeNativeMethods.SetWindowPos(this.NativeWindow.Handle.Value, new IntPtr(-2), x, y, cx, cy, 0x0040);
             }
         }
 
@@ -451,24 +449,19 @@ namespace LordJZ.Presentation.Controls
 
         #region WndProc
 
-        private static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
+        private void WmGetMinMaxInfo(IntPtr lParam)
         {
             var mmi = (MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(MINMAXINFO));
 
             // Adjust the maximized size and position to fit the work area of the correct monitor
-            IntPtr monitor = UnsafeNativeMethods.MonitorFromWindow(hwnd, Constants.MONITOR_DEFAULTTONEAREST);
+            MonitorInfo monitorInfo = this.NativeWindow.GetMonitor(MonitorFallbackKind.Nearest);
 
-            if (monitor != IntPtr.Zero)
-            {
-                var monitorInfo = new MONITORINFO();
-                UnsafeNativeMethods.GetMonitorInfo(monitor, monitorInfo);
-                RECT rcWorkArea = monitorInfo.rcWork;
-                RECT rcMonitorArea = monitorInfo.rcMonitor;
-                mmi.ptMaxPosition.X = Math.Abs(rcWorkArea.left - rcMonitorArea.left);
-                mmi.ptMaxPosition.Y = Math.Abs(rcWorkArea.top - rcMonitorArea.top);
-                mmi.ptMaxSize.X = Math.Abs(rcWorkArea.right - rcWorkArea.left);
-                mmi.ptMaxSize.Y = Math.Abs(rcWorkArea.bottom - rcWorkArea.top);
-            }
+            NativeRect rcWorkArea = monitorInfo.WorkArea;
+            NativeRect rcMonitorArea = monitorInfo.MonitorArea;
+            mmi.ptMaxPosition.X = Math.Abs(rcWorkArea.Left - rcMonitorArea.Left);
+            mmi.ptMaxPosition.Y = Math.Abs(rcWorkArea.Top - rcMonitorArea.Top);
+            mmi.ptMaxSize.X = Math.Abs(rcWorkArea.Right - rcWorkArea.Left);
+            mmi.ptMaxSize.Y = Math.Abs(rcWorkArea.Bottom - rcWorkArea.Top);
 
             Marshal.StructureToPtr(mmi, lParam, true);
         }
@@ -485,7 +478,7 @@ namespace LordJZ.Presentation.Controls
                     {
                         /* As per http://msdn.microsoft.com/en-us/library/ms632633(VS.85).aspx , "-1" lParam
                          * "does not repaint the nonclient area to reflect the state change." */
-                        returnval = UnsafeNativeMethods.DefWindowProc(this.Handle, message, wParam, new IntPtr(-1));
+                        returnval = UnsafeNativeMethods.DefWindowProc(this.NativeWindow.Handle.Value, message, wParam, new IntPtr(-1));
 
                         if (m_border != null)
                             m_border.Opacity = wParam == IntPtr.Zero ? 1.0 : 0.5;
@@ -495,7 +488,7 @@ namespace LordJZ.Presentation.Controls
                     break;
                 case Constants.WM_GETMINMAXINFO:
                     /* http://blogs.msdn.com/b/llobo/archive/2006/08/01/maximizing-window-_2800_with-windowstyle_3d00_none_2900_-considering-taskbar.aspx */
-                    WmGetMinMaxInfo(this.Handle, lParam);
+                    WmGetMinMaxInfo(lParam);
 
                     /* Setting handled to false enables the application to process it's own Min/Max requirements,
                      * as mentioned by jason.bullard (comment from September 22, 2011) on http://gallery.expression.microsoft.com/ZuneWindowBehavior/ */
@@ -560,28 +553,28 @@ namespace LordJZ.Presentation.Controls
                     break;
 
                 case Constants.WM_INITMENU:
-                    var hWnd = this.Handle;
+                    Handle systemMenu = this.NativeWindow.SystemMenu;
 
                     if (!this.ShowMaxRestoreButton)
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_MAXIMIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_MAXIMIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
                     else if (this.WindowState == WindowState.Maximized)
                     {
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_MAXIMIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_RESTORE, Constants.MF_ENABLED | Constants.MF_BYCOMMAND);
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_MOVE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_MAXIMIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_RESTORE, Constants.MF_ENABLED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_MOVE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
                     }
                     else
                     {
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_MAXIMIZE, Constants.MF_ENABLED | Constants.MF_BYCOMMAND);
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_RESTORE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_MOVE, Constants.MF_ENABLED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_MAXIMIZE, Constants.MF_ENABLED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_RESTORE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_MOVE, Constants.MF_ENABLED | Constants.MF_BYCOMMAND);
                     }
 
                     if (!this.ShowMinButton)
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_MINIMIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_MINIMIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
 
                     if (this.ResizeMode == ResizeMode.NoResize || this.WindowState == WindowState.Maximized)
-                        UnsafeNativeMethods.EnableMenuItem(UnsafeNativeMethods.GetSystemMenu(hWnd, false), Constants.SC_SIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
+                        UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_SIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
                     break;
             }
 

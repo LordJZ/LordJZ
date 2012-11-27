@@ -197,6 +197,7 @@ namespace LordJZ
         public static string Urlize(this string text)
         {
             Contract.Requires(text != null);
+            Contract.Ensures(Contract.Result<string>().IsUrlized());
 
             int length = text.Length;
             var builder = new StringBuilder(length);

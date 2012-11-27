@@ -8,15 +8,11 @@ namespace LordJZ.Threading.Contracts
     internal abstract class IAwaiterContract : IAwaiter
     {
         public abstract bool IsCompleted { get; }
+        public abstract void OnCompleted(Action continuation);
 
         void IAwaiter.GetResult()
         {
             Contract.Requires(this.IsCompleted);
-        }
-
-        void INotifyCompletion.OnCompleted(Action continuation)
-        {
-            //Contract.Requires(continuation != null);
         }
     }
 

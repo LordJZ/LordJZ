@@ -1,5 +1,4 @@
-﻿
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 
 namespace LordJZ
 {

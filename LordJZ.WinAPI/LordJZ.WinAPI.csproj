@@ -125,6 +125,10 @@
     <Compile Include="DesktopWindowManager.cs" />
     <Compile Include="Handle.cs" />
     <Compile Include="HandleFlags.cs" />
+    <Compile Include="MonitorFallbackKind.cs" />
+    <Compile Include="MonitorFlags.cs" />
+    <Compile Include="NativePoint.cs" />
+    <Compile Include="NativeWindow.cs" />
     <Compile Include="NonClientRenderingPolicy.cs" />
     <Compile Include="Process.cs" />
     <Compile Include="ProcessAccessRights.cs" />
@@ -132,17 +136,18 @@
     <Compile Include="ProcessMemoryStream.cs" />
     <Compile Include="ProcessModule.cs" />
     <Compile Include="ProcessToken.cs" />
+    <Compile Include="NativeRect.cs" />
+    <Compile Include="WindowPlacementFlags.cs" />
+    <Compile Include="WindowShow.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="WindowAttribute.cs" />
     <Compile Include="Native\Constants.cs" />
     <Compile Include="Native\CREATESTRUCT.cs" />
     <Compile Include="Native\MARGINS.cs" />
     <Compile Include="Native\MINMAXINFO.cs" />
-    <Compile Include="Native\MONITORINFO.cs" />
-    <Compile Include="Native\POINT.cs" />
-    <Compile Include="Native\RECT.cs" />
+    <Compile Include="MonitorInfo.cs" />
     <Compile Include="Native\UnsafeNativeMethods.cs" />
-    <Compile Include="Native\WINDOWPLACEMENT.cs" />
+    <Compile Include="WindowPlacement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Win32Error.cs" />
   </ItemGroup>

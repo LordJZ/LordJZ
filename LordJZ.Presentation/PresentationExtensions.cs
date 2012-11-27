@@ -14,6 +14,8 @@ namespace LordJZ.Presentation
 {
     public static class PresentationExtensions
     {
+        #region Getters
+
         /// <summary>
         /// Gets the native window handle of the specified <see cref="System.Windows.Media.Visual"/> object.
         /// </summary>
@@ -50,13 +52,20 @@ namespace LordJZ.Presentation
 
             //var dispatcher = obj.Dispatcher;
             //if (dispatcher.CheckAccess())
-                return Window.GetWindow(obj);
+            return Window.GetWindow(obj);
 
             //return dispatcher.Invoke(() => Window.GetWindow(obj));
         }
 
+        #endregion
+
+        #region Thread-safeness providers
+
         public static object SafeGetValue(this DependencyObject obj, DependencyProperty prop)
         {
+            Contract.Requires(obj != null);
+            Contract.Requires(prop != null);
+
             var dispatcher = obj.Dispatcher;
             if (dispatcher.CheckAccess())
                 return obj.GetValue(prop);
@@ -66,6 +75,9 @@ namespace LordJZ.Presentation
 
         public static void SafeSetValue(this DependencyObject obj, DependencyProperty prop, object value)
         {
+            Contract.Requires(obj != null);
+            Contract.Requires(prop != null);
+
             var dispatcher = obj.Dispatcher;
             if (dispatcher.CheckAccess())
                 obj.SetValue(prop, value);
@@ -75,6 +87,9 @@ namespace LordJZ.Presentation
 
         public static void SafeSetValue(this DependencyObject obj, DependencyProperty prop, bool value)
         {
+            Contract.Requires(obj != null);
+            Contract.Requires(prop != null);
+
             obj.SafeSetValue(prop, BooleanBoxes.Box(value));
         }
 
@@ -102,6 +117,8 @@ namespace LordJZ.Presentation
             return dispatcher.Invoke(() => func(obj));
         }
 
+        #endregion
+
         #region WinForms HWND access interface
 
         public static IFormsWindow GetFormsWindowInterface(this Visual visual)
@@ -122,7 +139,10 @@ namespace LordJZ.Presentation
                 m_handle = handle;
             }
 
-            IntPtr IFormsWindow.Handle { get { return m_handle; } }
+            IntPtr IFormsWindow.Handle
+            {
+                get { return m_handle; }
+            }
         }
 
         #endregion
@@ -147,7 +167,10 @@ namespace LordJZ.Presentation
                 m_handle = handle;
             }
 
-            IntPtr IPresentationWindow.Handle { get { return m_handle; } }
+            IntPtr IPresentationWindow.Handle
+            {
+                get { return m_handle; }
+            }
         }
 
         #endregion
@@ -270,6 +293,7 @@ namespace LordJZ.Presentation
         public static void AddHook(this Window window, HwndSourceHook hook)
         {
             Contract.Requires(window != null);
+            Contract.Requires(hook != null);
 
             var source = window.GetHwndSource();
             Contract.Assert(source != null);

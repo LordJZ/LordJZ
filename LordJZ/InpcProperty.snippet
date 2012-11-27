@@ -38,4 +38,50 @@
       </Declarations>
     </Snippet>
   </CodeSnippet>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>INotifyPropertyChanged Property with default value</Title>
+      <Shortcut>propnd</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="CSharp">
+        <![CDATA[#region $PropertyName$ property
+        
+        public const $PropertyType$ Default$PropertyName$ = $DefaultPropertyValue$;
+
+        $PropertyType$ m_$BackingFieldName$ = Default$PropertyName$;
+
+        [DefaultValue(Default$PropertyName$)]
+        public $PropertyType$ $PropertyName$
+        {
+            get { return m_$BackingFieldName$; }
+            set { this.SetProperty(ref m_$BackingFieldName$, value); }
+        }
+
+        #endregion]]>
+      </Code>
+      <Declarations>
+        <Literal>
+          <ID>PropertyType</ID>
+          <ToolTip>Replace with the type name of the property.</ToolTip>
+          <Default>int</Default>
+        </Literal>
+        <Literal>
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with the name of the property.</ToolTip>
+          <Default>Property</Default>
+        </Literal>
+        <Literal>
+          <ID>BackingFieldName</ID>
+          <ToolTip>Replace with the name of the backing field.</ToolTip>
+          <Default>property</Default>
+        </Literal>
+        <Literal>
+          <ID>DefaultPropertyValue</ID>
+          <ToolTip>Replace with the default value of the property.</ToolTip>
+          <Default>1</Default>
+        </Literal>
+      </Declarations>
+    </Snippet>
+  </CodeSnippet>
 </CodeSnippets>

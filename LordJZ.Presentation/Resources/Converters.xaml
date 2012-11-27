@@ -6,5 +6,6 @@
   <Converters:MultiplicationConverter x:Key="MultiplicationConverter"/>
   <Converters:UriToImageSourceConverter x:Key="UriToImageSourceConverter"/>
   <Converters:ResourceStringConverter x:Key="ResourceStringConverter"/>
+  <Converters:EqualityConverter x:Key="EqualityConverter"/>
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 </ResourceDictionary>

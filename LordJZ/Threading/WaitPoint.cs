@@ -124,6 +124,8 @@ namespace LordJZ.Threading
 
         public void OnCompleted(Action action)
         {
+            Contract.Assume(action != null);
+
             bool isComplete;
 
             lock (this)

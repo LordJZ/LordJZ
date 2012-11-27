@@ -153,6 +153,8 @@
   <ItemGroup>
     <Compile Include="ArrayExtensions.cs" />
     <Compile Include="Contracts\IEnumMemberInfoContract.cs" />
+    <Compile Include="Linq\NullCoalescing.Do.cs" />
+    <Compile Include="ObjectHelper.cs" />
     <Compile Include="Threading\Awaiter.cs" />
     <Compile Include="BooleanBoxes.cs" />
     <Compile Include="Collections\Contracts\ILongCollectionContract.cs" />
@@ -165,7 +167,6 @@
     <Compile Include="EnumOrString.cs" />
     <Compile Include="Threading\Contracts\IAwaitableContract.cs" />
     <Compile Include="Threading\Contracts\IAwaiterContract.cs" />
-    <Compile Include="Threading\Contracts\INotifyCompletionContract.cs" />
     <Compile Include="Threading\IAwaitable.cs" />
     <Compile Include="Threading\IAwaiter.cs" />
     <Compile Include="IEnumMemberInfo.cs" />

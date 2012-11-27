@@ -48,11 +48,17 @@ namespace LordJZ.WinAPI.Native
         /// <devdoc>http://msdn.microsoft.com/en-us/library/dd144901%28v=VS.85%29.aspx</devdoc>
         [DllImport(user32, EntryPoint = "GetMonitorInfoW", ExactSpelling = true, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetMonitorInfo([In] IntPtr hMonitor, [Out] MONITORINFO lpmi);
+        internal static extern bool GetMonitorInfo([In] IntPtr hMonitor, [Out] MonitorInfo lpmi);
 
         /// <devdoc>http://msdn.microsoft.com/en-us/library/dd145064%28v=VS.85%29.aspx</devdoc>
         [DllImport(user32)]
         internal static extern IntPtr MonitorFromWindow([In] IntPtr handle, [In] int flags);
+
+        [DllImport(user32)]
+        internal static extern IntPtr MonitorFromPoint([In] NativePoint point, [In] int flags);
+
+        [DllImport(user32)]
+        internal static extern IntPtr MonitorFromRect([In] ref NativeRect rect, [In] int flags);
 
         /// <devdoc>http://msdn.microsoft.com/en-us/library/windows/desktop/ms633545(v=vs.85).aspx</devdoc>
         [DllImport(user32)]
@@ -94,10 +100,10 @@ namespace LordJZ.WinAPI.Native
         internal static extern IntPtr SetClassLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         [DllImport(user32)]
-        internal static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl);
+        internal static extern bool SetWindowPlacement(IntPtr hWnd, [In] WindowPlacement lpwndpl);
 
         [DllImport(user32)]
-        internal static extern bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
+        internal static extern bool GetWindowPlacement(IntPtr hWnd, [Out] WindowPlacement lpwndpl);
 
         /// <devdoc>http://msdn.microsoft.com/en-us/library/windows/desktop/ms647636(v=vs.85).aspx</devdoc>
         [DllImport(user32)]
