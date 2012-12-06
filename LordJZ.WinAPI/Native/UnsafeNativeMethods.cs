@@ -128,6 +128,11 @@ namespace LordJZ.WinAPI.Native
         internal static extern bool FreeLibrary([In] IntPtr hModule);
 
         [DllImport(kernel32, SetLastError = true)]
+        internal static extern IntPtr OpenProcess(int dwDesiredAccess,
+                                                  [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle,
+                                                  int dwProcessId);
+
+        [DllImport(kernel32, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool CloseHandle(IntPtr hObject);
 
@@ -187,6 +192,20 @@ namespace LordJZ.WinAPI.Native
         [DllImport(psapi, SetLastError = true)]
         internal static extern bool EnumProcessModules(IntPtr hProcess, IntPtr lphModule, int cb,
                                                        [MarshalAs(UnmanagedType.I4)] out int lpcbNeeded);
+
+        [DllImport(psapi, SetLastError = true)]
+        internal static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule,
+                                                        [Out] StringBuilder lpBaseName,
+                                                        int nSize);
+
+        [DllImport(psapi, SetLastError = true)]
+        internal static extern uint GetModuleBaseName(IntPtr hProcess, IntPtr hModule,
+                                                      [Out] StringBuilder lpBaseName,
+                                                      int nSize);
+
+        [DllImport(psapi, SetLastError = true)]
+        internal static extern bool GetModuleInformation(IntPtr hProcess, IntPtr hModule,
+                                                         out MODULEINFO lpmodinfo, int cb);
 
         #endregion
 

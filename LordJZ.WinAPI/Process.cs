@@ -15,9 +15,66 @@ namespace LordJZ.WinAPI
     {
         #region Open
 
+        /// <summary>
+        /// Opens an existing local process object.
+        /// </summary>
+        /// <param name="pid">
+        /// The identifier of the local process to be opened.
+        /// </param>
+        /// <returns>
+        /// Open handle to the specified process.
+        /// </returns>
         public static Process Open(int pid)
         {
-            throw new NotImplementedException();
+            return Open(pid, ProcessAccessRights.QueryLimitedInformation);
+        }
+
+        /// <summary>
+        /// Opens an existing local process object.
+        /// </summary>
+        /// <param name="pid">
+        /// The identifier of the local process to be opened.
+        /// </param>
+        /// <param name="rights">
+        /// The access to the process object. This access right is checked against
+        /// the security descriptor for the process. This parameter can be
+        /// one or more of the <see cref="ProcessAccessRights"/>.
+        /// </param>
+        /// <returns>
+        /// Open handle to the specified process.
+        /// </returns>
+        public static Process Open(int pid, ProcessAccessRights rights)
+        {
+            return Open(pid, rights, false);
+        }
+
+        /// <summary>
+        /// Opens an existing local process object.
+        /// </summary>
+        /// <param name="pid">
+        /// The identifier of the local process to be opened.
+        /// </param>
+        /// <param name="rights">
+        /// The access to the process object. This access right is checked against
+        /// the security descriptor for the process. This parameter can be
+        /// one or more of the <see cref="ProcessAccessRights"/>.
+        /// </param>
+        /// <param name="inheritHandle">
+        /// If this value is <c>true</c>, processes created by this process
+        /// will inherit the handle. Otherwise, the processes do not inherit this handle.
+        /// </param>
+        /// <returns>
+        /// Open handle to the specified process.
+        /// </returns>
+        public static Process Open(int pid, ProcessAccessRights rights, bool inheritHandle)
+        {
+            IntPtr result = UnsafeNativeMethods.OpenProcess((int)rights, inheritHandle, pid);
+
+            Handle handle = new Handle(result);
+
+            Win32Error.EnsureNoWin32Error(handle != InvalidProcessHandle);
+
+            return new Process(handle);
         }
 
         #endregion
@@ -85,6 +142,14 @@ namespace LordJZ.WinAPI
             return checked((int)written);
         }
 
+        /// <summary>
+        /// Creates the <see cref="Stream"/> whose backing storage is
+        /// the memory space of the current <see cref="Process"/>.
+        /// </summary>
+        /// <returns>
+        /// A instance of <see cref="Stream"/> whose backing storage is
+        /// the memory space of the current <see cref="Process"/>.
+        /// </returns>
         public Stream GetMemoryStream()
         {
             return new ProcessMemoryStream(m_handle);
@@ -156,7 +221,7 @@ namespace LordJZ.WinAPI
             {
                 int exitCode = this.AnyExitCode;
 
-                if (exitCode == Constants.STILL_ACTIVE)
+                if (exitCode == Win32Error.StillActive)
                     throw new InvalidOperationException("The process is not yet terminated.");
 
                 return exitCode;
@@ -181,6 +246,37 @@ namespace LordJZ.WinAPI
 
         #region Modules
 
+        public ProcessModule[] GetModules()
+        {
+            Contract.Ensures(Contract.Result<ProcessModule[]>() != null);
+            Contract.Ensures(Contract.Result<ProcessModule[]>().Length > 0);
+
+            int nModules;
+            IntPtr[] array = GetModules(out nModules);
+
+            ProcessModule[] modules = new ProcessModule[nModules];
+
+            for (int i = 0; i < nModules; i++)
+                modules[i] = new ProcessModule(m_handle, new Handle(array[i]));
+
+            return modules;
+        }
+
+        public ProcessModule MainModule
+        {
+            get
+            {
+                int count;
+                IntPtr[] array = GetModules(out count);
+                if (count == 0)
+                    throw new InvalidOperationException("There are no modules in this process.");
+
+                return new ProcessModule(this, new Handle(array[0]));
+            }
+        }
+
+        #region Internal helpers
+
         unsafe bool EnumProcessModules(IntPtr[] array, out int nModules)
         {
             int nAllocModules = array.AllowNull().Select(_ => _.Length);
@@ -203,10 +299,11 @@ namespace LordJZ.WinAPI
             return result;
         }
 
-        public ProcessModule[] GetModules()
+        IntPtr[] GetModules(out int count)
         {
-            Contract.Ensures(Contract.Result<ProcessModule[]>() != null);
-            Contract.Ensures(Contract.Result<ProcessModule[]>().Length > 0);
+            Contract.Ensures(Contract.Result<IntPtr[]>() != null);
+            Contract.Ensures(Contract.ValueAtReturn(out count) >= 0);
+            Contract.Ensures(Contract.Result<IntPtr[]>().Length >= Contract.ValueAtReturn(out count));
 
             int nModules;
             int nAllocatedModules;
@@ -225,13 +322,11 @@ namespace LordJZ.WinAPI
             }
             while (result && nAllocatedModules >= nModules);
 
-            ProcessModule[] modules = new ProcessModule[nModules];
-
-            for (int i = 0; i < nModules; i++)
-                modules[i] = new ProcessModule(m_handle, new Handle(array[i]));
-
-            return modules;
+            count = nModules;
+            return array;
         }
+
+        #endregion
 
         #endregion
 

@@ -34,6 +34,6 @@
         public const int MF_BYCOMMAND = 0x00000000;
         public const int MF_ENABLED = 0x00000000;
 
-        public const int STILL_ACTIVE = 259;
+        public const int MaxPath = 520;
     }
 }

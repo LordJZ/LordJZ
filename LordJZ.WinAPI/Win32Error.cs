@@ -33,6 +33,7 @@ namespace LordJZ.WinAPI
                 throw new Win32Exception(error);
         }
 
+        public const int StillActive = 259;
         public const int PartialCopy = 299;
     }
 }
