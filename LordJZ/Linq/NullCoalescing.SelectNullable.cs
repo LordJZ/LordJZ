@@ -7,6 +7,7 @@ namespace LordJZ.Linq
 {
     partial class NullCoalescing
     {
+        [Pure]
         public static NullAllowed<TResult> SelectNullable<T, TResult>(this NullAllowed<T> nullable,
                                                                       Func<T, TResult> selector)
             where T : class
@@ -17,6 +18,7 @@ namespace LordJZ.Linq
             return nullable.Select(selector).AllowNull();
         }
 
+        [Pure]
         public static IList<TResult> SelectNullable<T, TResult>(this NullAllowed<T> nullable,
                                                                 Func<T, IList<TResult>> selector)
             where T : class
@@ -26,6 +28,7 @@ namespace LordJZ.Linq
             return nullable.Select(selector).AllowNull();
         }
 
+        [Pure]
         public static ICollection<TResult> SelectNullable<T, TResult>(this NullAllowed<T> nullable,
                                                                       Func<T, ICollection<TResult>> selector)
             where T : class
@@ -35,6 +38,7 @@ namespace LordJZ.Linq
             return nullable.Select(selector).AllowNull();
         }
 
+        [Pure]
         public static IEnumerable<TResult> SelectNullable<T, TResult>(this NullAllowed<T> nullable,
                                                                       Func<T, IEnumerable<TResult>> selector)
             where T : class
@@ -44,6 +48,7 @@ namespace LordJZ.Linq
             return nullable.Select(selector).AllowNull();
         }
 
+        [Pure]
         public static IList SelectNullable<T>(this NullAllowed<T> nullable,
                                                        Func<T, IList> selector)
             where T : class
@@ -53,6 +58,7 @@ namespace LordJZ.Linq
             return nullable.Select(selector).AllowNull();
         }
 
+        [Pure]
         public static ICollection SelectNullable<T>(this NullAllowed<T> nullable,
                                                              Func<T, ICollection> selector)
             where T : class
@@ -62,6 +68,7 @@ namespace LordJZ.Linq
             return nullable.Select(selector).AllowNull();
         }
 
+        [Pure]
         public static IEnumerable SelectNullable<T>(this NullAllowed<T> nullable,
                                                              Func<T, IEnumerable> selector)
             where T : class

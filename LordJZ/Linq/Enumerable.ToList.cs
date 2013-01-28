@@ -9,6 +9,7 @@ namespace LordJZ.Linq
 {
     partial class Enumerable
     {
+        [Pure]
         public static List<T> ToList<T>(this IEnumerable<T> enumerable)
         {
             Contract.Requires(enumerable != null);

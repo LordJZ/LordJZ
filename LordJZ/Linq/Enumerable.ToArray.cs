@@ -7,6 +7,7 @@ namespace LordJZ.Linq
 {
     partial class Enumerable
     {
+        [Pure]
         public static T[] ToArray<T>(this IEnumerable<T> enumerable)
         {
             Contract.Requires(enumerable != null);

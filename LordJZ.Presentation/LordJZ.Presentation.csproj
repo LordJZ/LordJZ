@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\BaseWindow.cs" />
+    <Compile Include="Controls\ContentSwitchMode.cs" />
     <Compile Include="Controls\Icon.cs" />
     <Compile Include="Controls\IconButton.cs" />
     <Compile Include="Controls\IconProperties.cs" />

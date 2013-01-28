@@ -152,9 +152,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="Collections\InfiniteEnumerable.cs" />
+    <Compile Include="Collections\SimpleLinkedList.cs" />
     <Compile Include="Contracts\IEnumMemberInfoContract.cs" />
+    <Compile Include="ITaggedObject.cs" />
     <Compile Include="Linq\NullCoalescing.Do.cs" />
     <Compile Include="ObjectHelper.cs" />
+    <Compile Include="Service.cs" />
+    <Compile Include="TaggedObject.cs" />
     <Compile Include="Threading\Awaiter.cs" />
     <Compile Include="BooleanBoxes.cs" />
     <Compile Include="Collections\Contracts\ILongCollectionContract.cs" />

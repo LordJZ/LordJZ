@@ -44,9 +44,11 @@ namespace LordJZ.Presentation.Controls
             set { SetValue(ShowMinButtonProperty, BooleanBoxes.Box(value)); }
         }
 
+        [Localizable(true)]
         public static readonly DependencyProperty MinButtonToolTipProperty =
             DependencyProperty.Register("MinButtonToolTip", typeof(string), typeof(BaseWindow));
 
+        [Localizable(true)]
         public string MinButtonToolTip
         {
             get { return (string)GetValue(MinButtonToolTipProperty); }
@@ -67,18 +69,22 @@ namespace LordJZ.Presentation.Controls
             set { SetValue(ShowMaxRestoreButtonProperty, BooleanBoxes.Box(value)); }
         }
 
+        [Localizable(true)]
         public static readonly DependencyProperty MaxButtonToolTipProperty =
             DependencyProperty.Register("MaxButtonToolTip", typeof(string), typeof(BaseWindow));
 
+        [Localizable(true)]
         public string MaxButtonToolTip
         {
             get { return (string)GetValue(MaxButtonToolTipProperty); }
             set { SetValue(MaxButtonToolTipProperty, value); }
         }
 
+        [Localizable(true)]
         public static readonly DependencyProperty RestoreButtonToolTipProperty =
             DependencyProperty.Register("RestoreButtonToolTip", typeof(string), typeof(BaseWindow));
 
+        [Localizable(true)]
         public string RestoreButtonToolTip
         {
             get { return (string)GetValue(RestoreButtonToolTipProperty); }
@@ -99,9 +105,11 @@ namespace LordJZ.Presentation.Controls
             set { SetValue(ShowCloseButtonProperty, BooleanBoxes.Box(value)); }
         }
 
+        [Localizable(true)]
         public static readonly DependencyProperty CloseButtonToolTipProperty =
             DependencyProperty.Register("CloseButtonToolTip", typeof(string), typeof(BaseWindow));
 
+        [Localizable(true)]
         public string CloseButtonToolTip
         {
             get { return (string)GetValue(CloseButtonToolTipProperty); }

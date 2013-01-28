@@ -9,9 +9,11 @@ namespace LordJZ.Presentation.Controls
     /// </remarks>
     public class MetroContentControl : ContentControl
     {
-        public static readonly DependencyProperty ReverseTransitionProperty = DependencyProperty.Register("ReverseTransition", typeof(bool), typeof(MetroContentControl), new FrameworkPropertyMetadata(false));
+        static readonly DependencyProperty ReverseTransitionProperty =
+            DependencyProperty.Register("ReverseTransition", typeof(bool), typeof(MetroContentControl),
+                                        new FrameworkPropertyMetadata(BooleanBoxes.False));
 
-        public bool ReverseTransition
+        bool ReverseTransition
         {
             get { return (bool)GetValue(ReverseTransitionProperty); }
             set { SetValue(ReverseTransitionProperty, BooleanBoxes.Box(value)); }
@@ -49,6 +51,34 @@ namespace LordJZ.Presentation.Controls
         {
             VisualStateManager.GoToState(this, "BeforeLoaded", true);
             VisualStateManager.GoToState(this, this.ReverseTransition ? "AfterLoadedReverse" : "AfterLoaded", true);
+        }
+
+        public void SwitchContent(object newContent)
+        {
+            this.SwitchContent(newContent, default(ContentSwitchMode));
+        }
+
+        public void SwitchContent(object newContent, ContentSwitchMode mode)
+        {
+            if (mode == ContentSwitchMode.Instant)
+            {
+                this.Content = newContent;
+            }
+            else
+            {
+                this.ReverseTransition = mode == ContentSwitchMode.Backward;
+
+                this.BeginInit();
+                try
+                {
+                    this.Content = newContent;
+                    this.Reload();
+                }
+                finally
+                {
+                    this.EndInit();
+                }
+            }
         }
     }
 }

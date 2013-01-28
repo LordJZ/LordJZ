@@ -10,24 +10,28 @@ namespace LordJZ.Linq
 {
     partial class Enumerable
     {
+        [Pure]
         public static IEnumerable<TResult> Select<T, TResult>(this IEnumerable<T> enumerable,
                                                               Func<T, TResult> selector)
         {
             return InternalSelect(enumerable, selector);
         }
 
+        [Pure]
         public static IReadOnlyCollection<TResult> Select<T, TResult>(this IReadOnlyCollection<T> collection,
                                                                       Func<T, TResult> selector)
         {
             return (IReadOnlyCollection<TResult>)InternalSelect(collection, selector);
         }
 
+        [Pure]
         public static IReadOnlyList<TResult> Select<T, TResult>(this IReadOnlyList<T> list,
                                                                 Func<T, TResult> selector)
         {
             return (IReadOnlyList<TResult>)InternalSelect(list, selector);
         }
 
+        [Pure]
         static IEnumerable<TResult> InternalSelect<T, TResult>(this IEnumerable<T> enumerable,
                                                                Func<T, TResult> selector)
         {

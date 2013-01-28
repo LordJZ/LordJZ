@@ -5,6 +5,7 @@ namespace LordJZ.Linq
 {
     partial class NullCoalescing
     {
+        [Pure]
         public static TResult Select<T, TResult>(this NullAllowed<T> nullable, Func<T, TResult> selector)
             where T : class
         {

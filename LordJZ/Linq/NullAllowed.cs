@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 using System.Diagnostics.Contracts;
 
 namespace LordJZ.Linq
@@ -23,6 +23,11 @@ namespace LordJZ.Linq
             {
                 Contract.Ensures(Contract.Result<T>() != null);
 
+                Contract.EndContractBlock();
+
+                if (m_target == null)
+                    throw new InvalidOperationException("Target is null.");
+
                 return m_target;
             }
         }
@@ -35,6 +40,18 @@ namespace LordJZ.Linq
         public bool IsNotNull
         {
             get { return m_target != null; }
+        }
+
+        [Pure]
+        public TResult Cast<TResult>() where TResult : class
+        {
+            return m_target as TResult;
+        }
+
+        [Pure]
+        public NullAllowed<TResult> CastNullable<TResult>() where TResult : class
+        {
+            return new NullAllowed<TResult>(m_target as TResult);
         }
     }
 }

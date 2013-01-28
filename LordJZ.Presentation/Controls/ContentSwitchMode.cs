@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LordJZ.Collections
+namespace LordJZ.Presentation.Controls
 {
-    [Obsolete]
-    public abstract class GenericCollectionModel<T> : CollectionModel
+    public enum ContentSwitchMode
     {
+        Forward,
+        Backward,
+        Instant
     }
 }
