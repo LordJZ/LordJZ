@@ -25,6 +25,8 @@ namespace LordJZ
 
                     s_instance = s_factory();
                     Contract.Assume(s_instance != null);
+
+                    s_factory = null;
                 }
 
                 return s_instance;
