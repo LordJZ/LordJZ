@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using LordJZ.Linq;
@@ -133,13 +134,66 @@ namespace LordJZ.WinAPI
         public int ReadMemory(IntPtr position, byte[] buffer, int offset, int count)
         {
             long read = ReadProcessMemory(m_handle.Value, position, buffer, offset, count);
+            if (read != count)
+                throw new Exception();
             return checked((int)read);
+        }
+
+        public byte[] ReadMemory(IntPtr position, int count)
+        {
+            byte[] buffer = new byte[count];
+            ReadMemory(position, buffer, 0, count);
+            return buffer;
         }
 
         public int WriteMemory(IntPtr position, byte[] buffer, int offset, int count)
         {
             long written = WriteProcessMemory(m_handle.Value, position, buffer, offset, count);
+            if (written != count)
+                throw new Exception();
             return checked((int)written);
+        }
+
+        public unsafe string ReadCString(IntPtr position, int sizeFactor = 64)
+        {
+            if (sizeFactor <= 0)
+                throw new ArgumentOutOfRangeException("sizeFactor");
+
+            int index = 0;
+            byte[] array = new byte[sizeFactor];
+            while (true)
+            {
+                int read;
+                while (!TryReadProcessMemory(m_handle.Value, position, array, index, sizeFactor, out read))
+                {
+                    sizeFactor = checked(sizeFactor / 2);
+                    if (sizeFactor == 0)
+                        throw new Win32Exception(Win32Error.Last);
+                }
+
+                if (Array.IndexOf(array, (byte)0, index, sizeFactor) >= 0)
+                {
+                    fixed (byte* ptr = array)
+                        return new string((sbyte*)ptr);
+                }
+
+                index = checked(index + read);
+
+                if (array.Length - index + sizeFactor < 0)
+                    Array.Resize(ref array, checked(array.Length * 2));
+            }
+        }
+
+        public unsafe T ReadStructure<T>(IntPtr position) where T : struct
+        {
+            Type structType = typeof(T);
+            int size = Marshal.SizeOf(structType);
+
+            byte[] memory = new byte[size];
+            ReadMemory(position, memory, 0, size);
+
+            fixed (byte* structPtr = memory)
+                return (T)Marshal.PtrToStructure(new IntPtr(structPtr), structType);
         }
 
         /// <summary>
@@ -157,12 +211,12 @@ namespace LordJZ.WinAPI
 
         #region Internal Helpers
 
-        internal static unsafe long ReadProcessMemory(IntPtr handle, IntPtr position,
+        internal static unsafe int ReadProcessMemory(IntPtr handle, IntPtr position,
                                                       byte[] buffer, int offset, int count)
         {
             buffer.CheckBoundaries(offset, count);
 
-            long read;
+            int read;
             fixed (byte* bufferPtr = buffer)
             {
                 IntPtr ptr = new IntPtr(bufferPtr + offset);
@@ -174,10 +228,31 @@ namespace LordJZ.WinAPI
                                                       ptr, ptrsizeCount, out ptrsizeRead)
                                    .EnsureNoWin32Error();
 
-                read = ptrsizeRead.ToInt64();
+                read = ptrsizeRead.ToInt32();
             }
 
             return read;
+        }
+
+        internal static unsafe bool TryReadProcessMemory(IntPtr handle, IntPtr position,
+                                                         byte[] buffer, int offset, int count,
+                                                         out int read)
+        {
+            buffer.CheckBoundaries(offset, count);
+
+            fixed (byte* bufferPtr = buffer)
+            {
+                IntPtr ptr = new IntPtr(bufferPtr + offset);
+                IntPtr ptrsizePosition = position;
+                IntPtr ptrsizeCount = new IntPtr(count);
+                IntPtr ptrsizeRead;
+
+                bool result = UnsafeNativeMethods.ReadProcessMemory(handle, ptrsizePosition,
+                                                                    ptr, ptrsizeCount, out ptrsizeRead);
+
+                read = ptrsizeRead.ToInt32();
+                return result && read == count;
+            }
         }
 
         internal static unsafe long WriteProcessMemory(IntPtr handle, IntPtr position,
