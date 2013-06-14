@@ -134,6 +134,81 @@ namespace LordJZ.WinAPI
 
         #endregion
 
+        #region Exports
+
+        public unsafe ProcessExport[] GetExports()
+        {
+            IntPtr baseAddress = this.BaseAddress;
+            IMAGE_DOS_HEADER dosHeader = m_process.ReadStructure<IMAGE_DOS_HEADER>(baseAddress);
+            if (!dosHeader.IsValid)
+                throw new InvalidOperationException();
+
+            IMAGE_NT_HEADERS ntHeaders = m_process.ReadStructure<IMAGE_NT_HEADERS>(baseAddress + dosHeader.e_lfanew);
+            if (!ntHeaders.IsValid)
+                throw new InvalidOperationException();
+
+            IMAGE_DATA_DIRECTORY dataDir;
+            if (!ntHeaders.Is64)
+            {
+                if (ntHeaders.OptionalHeader32.NumberOfRvaAndSizes == 0)
+                    throw new InvalidOperationException();
+
+                dataDir = ntHeaders.OptionalHeader32.ExportTable;
+            }
+            else
+            {
+                if (ntHeaders.OptionalHeader64.NumberOfRvaAndSizes == 0)
+                    throw new InvalidOperationException();
+
+                dataDir = ntHeaders.OptionalHeader64.ExportTable;
+            }
+
+            IMAGE_EXPORT_DIRECTORY dir = m_process.ReadStructure<IMAGE_EXPORT_DIRECTORY>(baseAddress + dataDir.VirtualAddress);
+            int count = dir.NumberOfNames;
+            if (count != dir.NumberOfFunctions)
+                throw new InvalidOperationException();
+
+            ProcessExport[] exports = new ProcessExport[count];
+
+            byte[] ptrArray = new byte[count * 4];
+
+            m_process.ReadMemory(baseAddress + dir.AddressOfFunctions, ptrArray, 0, ptrArray.Length);
+
+            fixed (byte* ptrOfPtrArray = ptrArray)
+            {
+                int* funcRvaArray = (int*)ptrOfPtrArray;
+                for (int i = 0; i < count; i++)
+                {
+                    exports[i].Address = baseAddress + funcRvaArray[i];
+
+                    exports[i].Process = m_process;
+                    exports[i].Module = this;
+                }
+            }
+
+            m_process.ReadMemory(baseAddress + dir.AddressOfNames, ptrArray, 0, ptrArray.Length);
+
+            fixed (byte* ptrOfPtrArray = ptrArray)
+            {
+                int* nameRvaArray = (int*)ptrOfPtrArray;
+                for (int i = 0; i < count; i++)
+                    exports[i].Name = m_process.ReadCString(baseAddress + nameRvaArray[i]);
+            }
+
+            m_process.ReadMemory(baseAddress + dir.AddressOfNameOrdinals, ptrArray, 0, count * 2);
+
+            fixed (byte* ptrOfPtrArray = ptrArray)
+            {
+                short* ordinalRvaArray = (short*)ptrOfPtrArray;
+                for (int i = 0; i < count; i++)
+                    exports[i].Ordinal = ordinalRvaArray[i];
+            }
+
+            return exports;
+        }
+
+        #endregion
+
         #region Private details
 
         void GetInfo(out MODULEINFO info)
