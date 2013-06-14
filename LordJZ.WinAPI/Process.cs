@@ -320,7 +320,7 @@ namespace LordJZ.WinAPI
 
                 result = this.EnumProcessModules(array, out nModules);
             }
-            while (result && nAllocatedModules >= nModules);
+            while (!(result && nAllocatedModules >= nModules));
 
             count = nModules;
             return array;
