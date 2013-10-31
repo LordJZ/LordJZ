@@ -102,7 +102,7 @@ namespace LordJZ.Presentation
             if (dispatcher.CheckAccess())
                 action(obj);
             else
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, action, obj);
+                dispatcher.InvokeAsync(() => action(obj));
         }
 
         public static TResult ThreadSafe<T, TResult>(this T obj, Func<T, TResult> func) where T : DispatcherObject
