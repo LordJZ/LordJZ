@@ -77,7 +77,7 @@ namespace LordJZ.Tests.Linq
 
         void AssertType(Type t, Func<object> obj)
         {
-            Assert.IsTrue(obj().GetType() == t);
+            Assert.AreEqual(t, obj().GetType());
         }
 
         void AssertException<T>(Func<object> obj) where T : Exception
@@ -92,12 +92,10 @@ namespace LordJZ.Tests.Linq
             {
                 exception = e is T;
 
-                if (!exception.Value)
-                    throw new Exception("Exception of unexpected type was thrown");
+                Assert.IsTrue(exception.Value, "Exception of unexpected type was thrown");
             }
 
-            if (!exception.HasValue)
-                throw new Exception("Exception was not thrown.");
+            Assert.IsTrue(exception.HasValue, "Exception was not thrown.");
         }
 
         [TestMethod]

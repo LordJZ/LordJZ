@@ -183,8 +183,7 @@ namespace LordJZ
         {
             Contract.Requires(text != null);
 
-            int len = text.Length;
-            for (int i = 0; i < len; i++)
+            for (int i = 0, len = text.Length; i < len; i++)
             {
                 if (!IsUrlCharacter(text[i]))
                     return false;
