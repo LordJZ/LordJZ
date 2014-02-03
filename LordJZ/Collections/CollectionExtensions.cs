@@ -6,14 +6,39 @@ namespace LordJZ.Collections
     public static class CollectionExtensions
     {
         public static void CopyTo<T>(
-            this IReadOnlyCollection<T> collection, int collectionIndex,
+            this IReadOnlyCollection<T> source,
+            IList<T> list, int listIndex)
+        {
+            Contract.Requires(source != null);
+            Contract.Requires(listIndex >= 0);
+            Contract.Requires(listIndex + source.Count <= list.Count);
+
+            CopyTo(source, 0, list, listIndex, source.Count);
+        }
+
+        public static void CopyTo<T>(
+            this IReadOnlyCollection<T> source,
             IList<T> list, int listIndex,
             int count)
         {
-            Contract.Requires(collection != null);
+            Contract.Requires(source != null);
             Contract.Requires(count >= 0);
-            Contract.Requires(collectionIndex >= 0);
-            Contract.Requires(collectionIndex + count <= collection.Count);
+            Contract.Requires(count <= source.Count);
+            Contract.Requires(listIndex >= 0);
+            Contract.Requires(listIndex + count <= list.Count);
+
+            CopyTo(source, 0, list, listIndex, count);
+        }
+
+        public static void CopyTo<T>(
+            this IReadOnlyCollection<T> source, int sourceIndex,
+            IList<T> list, int listIndex,
+            int count)
+        {
+            Contract.Requires(source != null);
+            Contract.Requires(count >= 0);
+            Contract.Requires(sourceIndex >= 0);
+            Contract.Requires(sourceIndex + count <= source.Count);
             Contract.Requires(listIndex >= 0);
             Contract.Requires(listIndex + count <= list.Count);
 
@@ -22,9 +47,9 @@ namespace LordJZ.Collections
 
             int skipped = 0;
             int copied = 0;
-            foreach (var item in collection)
+            foreach (var item in source)
             {
-                if (skipped < collectionIndex)
+                if (skipped < sourceIndex)
                 {
                     ++skipped;
                     continue;
@@ -41,7 +66,7 @@ namespace LordJZ.Collections
                 break;
             }
 
-            Contract.Assert(skipped == collectionIndex);
+            Contract.Assert(skipped == sourceIndex);
             Contract.Assert(copied == count);
         }
     }
