@@ -244,6 +244,7 @@
     <Compile Include="Threading\DispatcherExtensions.cs" />
     <Compile Include="Threading\RWLockSlimExtensions.cs" />
     <Compile Include="Threading\RWLockSlimGuards.cs" />
+    <Compile Include="UnixTime.cs" />
     <Compile Include="ValueTuple.cs" />
     <Compile Include="Threading\WaitPoint.cs" />
   </ItemGroup>
