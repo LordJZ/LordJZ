@@ -67,7 +67,7 @@ namespace LordJZ.Linq
                 {
                     if (i == length)
                     {
-                        Array.Resize(ref array, length = checked(length * 2));
+                        Array.Resize(ref array, length = Math.Max(checked(length * 2), 4));
                         Contract.Assert(array.Length == length);
                     }
 
@@ -75,7 +75,7 @@ namespace LordJZ.Linq
                     ++i;
                 }
 
-                if (i != length)
+                if (i != length || array == null)
                     Array.Resize(ref array, i);
 
                 return array;

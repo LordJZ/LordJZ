@@ -158,6 +158,8 @@
   <ItemGroup>
     <Compile Include="AdvancedFormatExtensionsTests.cs" />
     <Compile Include="Linq\MakeProxyTests.cs" />
+    <Compile Include="Linq\TestHelpers.cs" />
+    <Compile Include="Linq\ToArrayTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObservableListTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
