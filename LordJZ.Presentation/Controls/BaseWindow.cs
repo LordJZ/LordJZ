@@ -364,10 +364,16 @@ namespace LordJZ.Presentation.Controls
             this.WindowState = WindowState.Minimized;
         }
 
+        bool CanResize()
+        {
+            return ResizeMode == ResizeMode.CanResizeWithGrip || ResizeMode == ResizeMode.CanResize;
+        }
+
+        bool m_maximizing;
         protected void TitleBarMouseDown(object sender, MouseButtonEventArgs e)
         {
             // If left mouse button down but not right ...
-            if (e.ChangedButton == MouseButton.Left && e.RightButton != MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
             {
                 // ... on the icon ...
                 var mousePosition = GetCorrectPosition(this);
@@ -385,11 +391,21 @@ namespace LordJZ.Presentation.Controls
                     ShowSystemMenuPhysicalCoordinates(this, PointToScreen(new Point(0, titleBarHeight)));
                 }
                 // ... double click on the title bar ...
-                else if (e.ClickCount >= 2 && (ResizeMode == ResizeMode.CanResizeWithGrip || ResizeMode == ResizeMode.CanResize))
-                    // ... maximize/restore the window.
-                    WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+                else if (e.ClickCount >= 2 && this.CanResize())
+                {
+                    m_maximizing = true;
+                    try
+                    {
+                        // ... maximize/restore the window.
+                        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+                    }
+                    finally
+                    {
+                        m_maximizing = false;
+                    }
+                }
                 // ... single click on the title bar ...
-                else
+                else if (WindowState == WindowState.Normal)
                     // ... drag the window.
                     DragMove();
             }
@@ -411,9 +427,12 @@ namespace LordJZ.Presentation.Controls
 
         private void TitleBarMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.RightButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed
-                && e.LeftButton == MouseButtonState.Pressed && WindowState == WindowState.Maximized
-                && ResizeMode != ResizeMode.NoResize)
+            if (!m_maximizing
+                && e.RightButton != MouseButtonState.Pressed
+                && e.MiddleButton != MouseButtonState.Pressed
+                && e.LeftButton == MouseButtonState.Pressed
+                && WindowState == WindowState.Maximized
+                && this.CanResize())
             {
                 // Calculating correct left coordinate for multi-screen system.
                 Point mouseAbsolute = PointToScreen(Mouse.GetPosition(this));
