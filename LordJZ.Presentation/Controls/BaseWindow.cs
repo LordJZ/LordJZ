@@ -254,7 +254,7 @@ namespace LordJZ.Presentation.Controls
                 bool ignoreTaskBar = this.IgnoreTaskbarOnMaximize;
                 var x = ignoreTaskBar ? monitorInfo.MonitorArea.Left : monitorInfo.WorkArea.Left;
                 var y = ignoreTaskBar ? monitorInfo.MonitorArea.Top : monitorInfo.WorkArea.Top;
-                var cx = ignoreTaskBar ? monitorInfo.WorkArea.Right : Math.Abs(monitorInfo.WorkArea.Right - x);
+                var cx = ignoreTaskBar ? monitorInfo.MonitorArea.Right : Math.Abs(monitorInfo.WorkArea.Right - x);
                 var cy = ignoreTaskBar ? monitorInfo.MonitorArea.Bottom : Math.Abs(monitorInfo.WorkArea.Bottom - y);
                 UnsafeNativeMethods.SetWindowPos(this.NativeWindow.Handle.Value, new IntPtr(-2), x, y, cx, cy, 0x0040);
             }
