@@ -13,14 +13,14 @@ namespace LordJZ.Tests.Linq
         static void Test(int[] haystack, int[] needles, int?[] result)
         {
             int?[] got = haystack.OrderedMatch(needles, _ => _, _ => _, Comparer<int>.Default,
-                                               (v1, v2, r) =>
+                                               (v1, v2, r, i1, i2) =>
                                                {
                                                    Assert.AreEqual(r, v2);
                                                    Assert.AreEqual(r, v1);
 
                                                    return (int?)r;
                                                },
-                                               (v, k) => (int?)null)
+                                               (v, k, i1, i2) => (int?)null)
                                  .ToArray();
             Assert.IsTrue(got.SequenceEqual(result));
         }
