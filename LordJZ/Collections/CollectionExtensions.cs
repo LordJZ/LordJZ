@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace LordJZ.Collections
 {
     public static class CollectionExtensions
     {
+        #region CopyTo
+
         public static void CopyTo<T>(
             this IReadOnlyCollection<T> source,
             IList<T> list, int listIndex)
@@ -69,5 +72,86 @@ namespace LordJZ.Collections
             Contract.Assert(skipped == sourceIndex);
             Contract.Assert(copied == count);
         }
+
+        #endregion
+
+        #region BinarySearch<IList>
+
+        public static int BinarySearch<TItem, TKey>(this IList<TItem> list, TKey key, Func<TKey, TItem, int> comparer)
+        {
+            Contract.Requires(list != null);
+            Contract.Requires(comparer != null);
+            Contract.Ensures(Contract.Result<int>() >= ~list.Count);
+            Contract.Ensures(Contract.Result<int>() < list.Count);
+
+            int lower = 0;
+            int upper = list.Count - 1;
+
+            while (lower <= upper)
+            {
+                int middle = lower + (upper - lower) / 2;
+                int result = comparer(key, list[middle]);
+                if (result < 0)
+                    upper = middle - 1;
+                else if (result > 0)
+                    lower = middle + 1;
+                else
+                    return middle;
+            }
+
+            return ~lower;
+        }
+
+        public static int BinarySearch<TItem>(this IList<TItem> list, TItem value)
+        {
+            return BinarySearch(list, value, Comparer<TItem>.Default);
+        }
+
+        public static int BinarySearch<TItem>(this IList<TItem> list, TItem value, IComparer<TItem> comparer)
+        {
+            return list.BinarySearch(value, comparer.Compare);
+        }
+
+        #endregion
+
+        #region BinarySearch<IReadOnlyList>
+
+        public static int BinarySearch<TItem, TKey>(this IReadOnlyList<TItem> list, TKey key, Func<TKey, TItem, int> comparer)
+        {
+            Contract.Requires(list != null);
+            Contract.Requires(comparer != null);
+            Contract.Ensures(Contract.Result<int>() >= ~list.Count);
+            Contract.Ensures(Contract.Result<int>() < list.Count);
+
+            int lower = 0;
+            int upper = list.Count - 1;
+
+            while (lower <= upper)
+            {
+                int middle = lower + (upper - lower) / 2;
+                int result = comparer(key, list[middle]);
+                if (result < 0)
+                    upper = middle - 1;
+                else if (result > 0)
+                    lower = middle + 1;
+                else
+                    return middle;
+            }
+
+            return ~lower;
+        }
+
+        public static int BinarySearch<TItem>(this IReadOnlyList<TItem> list, TItem value)
+        {
+            return BinarySearch(list, value, Comparer<TItem>.Default);
+        }
+
+        public static int BinarySearch<TItem>(this IReadOnlyList<TItem> list, TItem value, IComparer<TItem> comparer)
+        {
+            return list.BinarySearch(value, comparer.Compare);
+        }
+
+        #endregion
+
     }
 }
