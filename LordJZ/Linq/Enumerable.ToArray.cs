@@ -19,11 +19,11 @@ namespace LordJZ.Linq
             if (enumerable is T[])
                 return (T[])((T[])enumerable).Clone();
 
-            if (enumerable is IList<T>)
+            if (enumerable is ICollection<T>)
             {
-                var list = (IList<T>)enumerable;
-                T[] array = new T[list.Count];
-                list.CopyTo(array, 0);
+                var collection = (ICollection<T>)enumerable;
+                T[] array = new T[collection.Count];
+                collection.CopyTo(array, 0);
                 return array;
             }
 
@@ -34,16 +34,6 @@ namespace LordJZ.Linq
                 T[] array = new T[count];
                 for (int i = 0; i < count; i++)
                     array[i] = list[i];
-                return array;
-            }
-
-            if (enumerable is ICollection<T>)
-            {
-                var collection = (ICollection<T>)enumerable;
-                T[] array = new T[collection.Count];
-                int i = -1;
-                foreach (var item in enumerable)
-                    array[++i] = item;
                 return array;
             }
 
