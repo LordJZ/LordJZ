@@ -157,6 +157,7 @@
     <Compile Include="Contracts\IEnumMemberInfoContract.cs" />
     <Compile Include="ITaggedObject.cs" />
     <Compile Include="Linq\Enumerable.OrderedMatch.cs" />
+    <Compile Include="Linq\Enumerable.Repeat.cs" />
     <Compile Include="Linq\Enumerable.SystemLinqProxies.cs" />
     <Compile Include="Linq\NullCoalescing.Do.cs" />
     <Compile Include="ObjectHelper.cs" />
