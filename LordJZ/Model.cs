@@ -86,6 +86,30 @@ namespace LordJZ
             return false;
         }
 
+        /// <summary>
+        /// Sets the property to the specified value and raises
+        /// the <see cref="NotifyPropertyChangedObject.PropertyChanged"/> event if
+        /// the new value is not equal to the old value of the property
+        /// according to the specified equality comparer.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The underlying type of the property.
+        /// </typeparam>
+        /// <param name="property">
+        /// The backing field of the property, passed by reference.
+        /// </param>
+        /// <param name="value">
+        /// The new value of the property.
+        /// </param>
+        /// <param name="propertyName">
+        /// The name of the property to set.
+        /// </param>
+        /// <param name="equalityComparer">
+        /// The equality comparer to use when comparing the old value and the new value of the property.
+        /// </param>
+        /// <returns>
+        /// <c>true</c>, if the value has been changed; otherwise, <c>false</c>.
+        /// </returns>
         protected bool SetProperty<T>(ref T property, T value, IEqualityComparer<T> equalityComparer,
                                       [CallerMemberName] string propertyName = null)
         {
