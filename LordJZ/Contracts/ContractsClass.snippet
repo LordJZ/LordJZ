@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Contracts Class</Title>
+      <Shortcut>ccls</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="CSharp">
+        <![CDATA[#region $ClassName$ Contracts
+
+#if CONTRACTS_FULL
+    [ContractClassFor(typeof($ClassName$))]
+    internal abstract class $ClassName$Contracts : $ClassName$
+    {
+    }
+#endif
+
+    #endregion]]>
+      </Code>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <ToolTip>Replace with the type name of the contracted class or interface.</ToolTip>
+          <Default>MyClass</Default>
+        </Literal>
+      </Declarations>
+    </Snippet>
+  </CodeSnippet>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Contracts Class Attribute</Title>
+      <Shortcut>cclsa</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="CSharp">
+        <![CDATA[#if CONTRACTS_FULL
+    [ContractClass(typeof($ClassName$Contracts))]
+#endif]]>
+      </Code>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <ToolTip>Replace with the type name of the contracted class or interface.</ToolTip>
+          <Default>MyClass</Default>
+        </Literal>
+      </Declarations>
+    </Snippet>
+  </CodeSnippet>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Contracted Interface</Title>
+      <Shortcut>ciface</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="CSharp">
+        <![CDATA[#if CONTRACTS_FULL
+    [ContractClass(typeof($ClassName$Contracts))]
+#endif
+    public interface $ClassName$
+    {
+    }
+
+    #region $ClassName$ Contracts
+
+#if CONTRACTS_FULL
+    [ContractClassFor(typeof($ClassName$))]
+    internal abstract class $ClassName$Contracts : $ClassName$
+    {
+    }
+#endif
+
+    #endregion]]>
+      </Code>
+      <Declarations>
+        <Literal>
+          <ID>ClassName</ID>
+          <ToolTip>Replace with the type name of the contracted class or interface.</ToolTip>
+          <Default>MyClass</Default>
+        </Literal>
+      </Declarations>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

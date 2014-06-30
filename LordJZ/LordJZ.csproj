@@ -251,6 +251,7 @@
     <Compile Include="Threading\WaitPoint.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Contracts\ContractsClass.snippet" />
     <None Include="InpcProperty.snippet" />
   </ItemGroup>
   <ItemGroup />
