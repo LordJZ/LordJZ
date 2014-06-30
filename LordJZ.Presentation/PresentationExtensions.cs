@@ -1,4 +1,5 @@
-﻿using System.Windows.Threading;
+﻿using System.Threading.Tasks;
+using System.Windows.Threading;
 using LordJZ.WinAPI;
 using LordJZ.WinAPI.Native;
 using System;
@@ -298,6 +299,35 @@ namespace LordJZ.Presentation
             var source = window.GetHwndSource();
             Contract.Assert(source != null);
             source.AddHook(hook);
+        }
+
+        /// <summary>
+        /// Ensures the specified window is visible and focused.
+        /// </summary>
+        /// <param name="window">
+        /// The window which is shown and focused.
+        /// </param>
+        /// <returns>
+        /// The task upon completion of which the window will be visible and focused.
+        /// </returns>
+        public static async Task EnsureVisibleFocused(this Window window)
+        {
+            Contract.Requires(window != null);
+            Contract.Ensures(Contract.Result<Task>() != null);
+
+            if (!window.IsVisible || !window.IsActive)
+                await window.Dispatcher.InvokeAsync(() => EnsureVisibleFocusedInternal(window));
+        }
+
+        static void EnsureVisibleFocusedInternal(Window window)
+        {
+            Contract.Requires(window != null);
+
+            if (!window.IsVisible)
+                window.Show();
+
+            if (!window.IsActive)
+                window.Activate();
         }
     }
 }
