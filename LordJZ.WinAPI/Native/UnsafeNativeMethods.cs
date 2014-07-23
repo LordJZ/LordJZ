@@ -16,6 +16,7 @@ namespace LordJZ.WinAPI.Native
         internal const string gdi32 = "gdi32";
         internal const string ntdll = "ntdll";
         internal const string psapi = "psapi";
+        internal const string shcore = "shcore"; // ShellScalingAPI.h
 
         #region dwmapi
 
@@ -216,6 +217,16 @@ namespace LordJZ.WinAPI.Native
 
         [DllImport(gdi32)]
         internal static extern bool DeleteObject(IntPtr hObject);
+
+        #endregion
+
+        #region shcore
+
+        [DllImport(shcore)]
+        internal static extern int GetProcessDpiAwareness([Optional] IntPtr hProcess, out ProcessDpiAwareness awareness);
+
+        [DllImport(shcore)]
+        internal static extern int SetProcessDpiAwareness(ProcessDpiAwareness awareness);
 
         #endregion
 

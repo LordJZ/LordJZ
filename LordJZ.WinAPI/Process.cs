@@ -405,6 +405,33 @@ namespace LordJZ.WinAPI
 
         #endregion
 
+        #region DpiAwareness
+
+        /// <summary>
+        /// Sets the current process's DPI awareness setting.
+        /// </summary>
+        /// <param name="awareness">
+        /// The DPI awareness value to set.
+        /// </param>
+        public static void SetDpiAwareness(ProcessDpiAwareness awareness)
+        {
+            UnsafeNativeMethods.SetProcessDpiAwareness(awareness)
+                               .EnsureNoWin32Error();
+        }
+
+        public ProcessDpiAwareness DpiAwareness
+        {
+            get
+            {
+                ProcessDpiAwareness awareness;
+                UnsafeNativeMethods.GetProcessDpiAwareness(this.Handle.Value, out awareness)
+                                   .EnsureNoWin32Error();
+                return awareness;
+            }
+        }
+
+        #endregion
+
         #region Dispose helpers
 
         public bool Close()

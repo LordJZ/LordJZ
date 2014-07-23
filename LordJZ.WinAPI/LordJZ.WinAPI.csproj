@@ -172,6 +172,7 @@
     <Compile Include="NonClientRenderingPolicy.cs" />
     <Compile Include="Process.cs" />
     <Compile Include="ProcessAccessRights.cs" />
+    <Compile Include="ProcessDpiAwareness.cs" />
     <Compile Include="ProcessExport.cs" />
     <Compile Include="ProcessInfoClass.cs" />
     <Compile Include="ProcessMemoryStream.cs" />

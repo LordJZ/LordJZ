@@ -26,6 +26,12 @@ namespace LordJZ.WinAPI
                 throw new Win32Exception(error);
         }
 
+        internal static void EnsureNoWin32Error(this int error)
+        {
+            if (!IsSuccess(error))
+                throw new Win32Exception(error);
+        }
+
         internal static void EnsureNoWin32Error(this bool isExpectedResult)
         {
             int error = Last;
