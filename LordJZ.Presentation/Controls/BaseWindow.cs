@@ -376,7 +376,7 @@ namespace LordJZ.Presentation.Controls
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
             {
                 // ... on the icon ...
-                var mousePosition = GetCorrectPosition(this);
+                var mousePosition = GetCorrectCursorPosition(this);
                 var titleBarHeight = m_titleBar.ActualHeight;
                 if (mousePosition.X <= titleBarHeight && mousePosition.Y <= titleBarHeight)
                 {
@@ -415,14 +415,35 @@ namespace LordJZ.Presentation.Controls
         {
             // Right-click on the title bar without left button down should open the system menu
             if (e.ChangedButton == MouseButton.Right && e.LeftButton != MouseButtonState.Pressed)
-                ShowSystemMenuPhysicalCoordinates(this, PointToScreen(GetCorrectPosition(this)));
+                ShowSystemMenuPhysicalCoordinates(this, this.PointToScreen(GetCorrectCursorPosition(this)));
         }
 
-        private static Point GetCorrectPosition(Visual relativeTo)
+        // returns units
+        [Pure]
+        private static Point GetCorrectCursorPosition(Visual relativeTo)
+        {
+            Contract.Requires(relativeTo != null);
+
+            return relativeTo.PointFromScreen(GetCorrectCursorPosition());
+        }
+
+        // returns pixels
+        [Pure]
+        private static Point GetCorrectCursorPosition()
         {
             UnsafeNativeMethods.Win32Point w32Mouse;
             UnsafeNativeMethods.GetCursorPos(out w32Mouse);
-            return relativeTo.PointFromScreen(new Point(w32Mouse.X, w32Mouse.Y));
+            return new Point(w32Mouse.X, w32Mouse.Y);
+        }
+
+        Point PixelsToUnits(Point pixels)
+        {
+            return PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice.Transform(pixels);
+        }
+
+        Point UnitsToPixels(Point units)
+        {
+            return PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice.Transform(units);
         }
 
         private void TitleBarMouseMove(object sender, MouseEventArgs e)
@@ -435,7 +456,9 @@ namespace LordJZ.Presentation.Controls
                 && this.CanResize())
             {
                 // Calculating correct left coordinate for multi-screen system.
-                Point mouseAbsolute = PointToScreen(Mouse.GetPosition(this));
+                Point mouseAbsolute = GetCorrectCursorPosition();
+                Point mouseRelative = this.PointFromScreen(mouseAbsolute);
+                mouseAbsolute = PixelsToUnits(mouseAbsolute);
                 double width = RestoreBounds.Width;
                 double left = mouseAbsolute.X - width / 2;
 
@@ -443,11 +466,9 @@ namespace LordJZ.Presentation.Controls
                 double virtualScreenWidth = SystemParameters.VirtualScreenWidth;
                 left = left + width > virtualScreenWidth ? virtualScreenWidth - width : left;
 
-                var mousePosition = e.MouseDevice.GetPosition(this);
-
                 // When dragging the window down at the very top of the border,
                 // move the window a bit upwards to avoid showing the resize handle as soon as the mouse button is released
-                Top = mousePosition.Y < 5 ? -5 : mouseAbsolute.Y - mousePosition.Y;
+                Top = mouseRelative.Y < 5 ? -5 : mouseAbsolute.Y - mouseRelative.Y;
                 Left = left;
 
                 // Restore window to normal state.
@@ -459,15 +480,17 @@ namespace LordJZ.Presentation.Controls
 
         private static void ShowSystemMenuPhysicalCoordinates(Window window, Point physicalScreenLocation)
         {
-            if (window == null) return;
+            Contract.Requires(window != null);
 
-            var hwnd = new WindowInteropHelper(window).Handle;
-            if (hwnd == IntPtr.Zero || !UnsafeNativeMethods.IsWindow(hwnd))
-                return;
+            BaseWindow baseWindow = window as BaseWindow;
+            NativeWindow nw = baseWindow != null ? baseWindow.NativeWindow : window.GetNativeWindow();
 
-            var hmenu = UnsafeNativeMethods.GetSystemMenu(hwnd, false);
+            IntPtr hwnd = nw.Handle.Value;
+            IntPtr hmenu = UnsafeNativeMethods.GetSystemMenu(hwnd, false);
 
-            var cmd = UnsafeNativeMethods.TrackPopupMenuEx(hmenu, Constants.TPM_LEFTBUTTON | Constants.TPM_RETURNCMD, (int)physicalScreenLocation.X, (int)physicalScreenLocation.Y, hwnd, IntPtr.Zero);
+            var cmd = UnsafeNativeMethods.TrackPopupMenuEx(hmenu, Constants.TPM_LEFTBUTTON | Constants.TPM_RETURNCMD,
+                                                           (int)physicalScreenLocation.X, (int)physicalScreenLocation.Y,
+                                                           hwnd, IntPtr.Zero);
             if (0 != cmd)
                 UnsafeNativeMethods.PostMessage(hwnd, Constants.SYSCOMMAND, new IntPtr(cmd), IntPtr.Zero);
         }
