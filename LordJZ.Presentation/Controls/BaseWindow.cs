@@ -369,7 +369,6 @@ namespace LordJZ.Presentation.Controls
             return ResizeMode == ResizeMode.CanResizeWithGrip || ResizeMode == ResizeMode.CanResize;
         }
 
-        bool m_maximizing;
         protected void TitleBarMouseDown(object sender, MouseButtonEventArgs e)
         {
             // If left mouse button down but not right ...
@@ -393,16 +392,11 @@ namespace LordJZ.Presentation.Controls
                 // ... double click on the title bar ...
                 else if (e.ClickCount >= 2 && this.CanResize())
                 {
-                    m_maximizing = true;
-                    try
-                    {
-                        // ... maximize/restore the window.
-                        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-                    }
-                    finally
-                    {
-                        m_maximizing = false;
-                    }
+                    // ... maximize/restore the window.
+                    WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+                    // prevent mousemove event
+                    m_previousCursorPosition = GetCorrectCursorPosition();
                 }
                 // ... single click on the title bar ...
                 else if (WindowState == WindowState.Normal)
@@ -456,10 +450,10 @@ namespace LordJZ.Presentation.Controls
             get { return PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice; }
         }
 
+        Point m_previousCursorPosition;
         private void TitleBarMouseMove(object sender, MouseEventArgs e)
         {
-            if (!m_maximizing
-                && e.RightButton != MouseButtonState.Pressed
+            if (e.RightButton != MouseButtonState.Pressed
                 && e.MiddleButton != MouseButtonState.Pressed
                 && e.LeftButton == MouseButtonState.Pressed
                 && WindowState == WindowState.Maximized
@@ -467,6 +461,11 @@ namespace LordJZ.Presentation.Controls
             {
                 // Calculating correct left coordinate for multi-screen system.
                 Point mouseAbsolute = GetCorrectCursorPosition();
+                if (m_previousCursorPosition == mouseAbsolute)
+                    return;
+
+                m_previousCursorPosition = mouseAbsolute;
+
                 Point mouseRelative = this.PointFromScreen(mouseAbsolute);
                 mouseAbsolute = PixelsToUnits(mouseAbsolute);
                 double width = RestoreBounds.Width;
