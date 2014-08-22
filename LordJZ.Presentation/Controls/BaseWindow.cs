@@ -438,12 +438,22 @@ namespace LordJZ.Presentation.Controls
 
         Point PixelsToUnits(Point pixels)
         {
-            return PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice.Transform(pixels);
+            return TransformFromDevice.Transform(pixels);
+        }
+
+        Matrix TransformFromDevice
+        {
+            get { return PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice; }
         }
 
         Point UnitsToPixels(Point units)
         {
-            return PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice.Transform(units);
+            return TransformToDevice.Transform(units);
+        }
+
+        Matrix TransformToDevice
+        {
+            get { return PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice; }
         }
 
         private void TitleBarMouseMove(object sender, MouseEventArgs e)
@@ -463,16 +473,21 @@ namespace LordJZ.Presentation.Controls
                 double left = mouseAbsolute.X - width / 2;
 
                 // Aligning window's position to fit the screen.
-                double virtualScreenWidth = SystemParameters.VirtualScreenWidth;
-                left = left + width > virtualScreenWidth ? virtualScreenWidth - width : left;
+                Rect workArea = this.NativeWindow.Monitor.WorkArea.ToRect();
+                workArea.Transform(this.TransformFromDevice);
+                if (left < workArea.Left)
+                    left = workArea.Left;
+                if (left > workArea.Right - width)
+                    left = workArea.Right - width;
+
+                // Restore window to normal state.
+                WindowState = WindowState.Normal;
 
                 // When dragging the window down at the very top of the border,
                 // move the window a bit upwards to avoid showing the resize handle as soon as the mouse button is released
                 Top = mouseRelative.Y < 5 ? -5 : mouseAbsolute.Y - mouseRelative.Y;
                 Left = left;
 
-                // Restore window to normal state.
-                WindowState = WindowState.Normal;
 
                 DragMove();
             }
