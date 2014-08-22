@@ -337,14 +337,6 @@ namespace LordJZ.Presentation.Controls
             source.AddHook(HwndSourceHook);
         }
 
-        void SetDefaultBackgroundColor()
-        {
-            var bgSolidColorBrush = this.Background as SolidColorBrush;
-
-            if (bgSolidColorBrush != null)
-                this.SetDefaultBackgroundColor(bgSolidColorBrush.Color);
-        }
-
         #endregion
 
         #region Title Bar
@@ -364,19 +356,14 @@ namespace LordJZ.Presentation.Controls
             this.WindowState = WindowState.Minimized;
         }
 
-        bool CanResize()
-        {
-            return ResizeMode == ResizeMode.CanResizeWithGrip || ResizeMode == ResizeMode.CanResize;
-        }
-
         protected void TitleBarMouseDown(object sender, MouseButtonEventArgs e)
         {
             // If left mouse button down but not right ...
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
             {
                 // ... on the icon ...
-                var mousePosition = GetCorrectCursorPosition(this);
-                var titleBarHeight = m_titleBar.ActualHeight;
+                Point mousePosition = GetCorrectCursorPosition(this);
+                double titleBarHeight = m_titleBar.ActualHeight;
                 if (mousePosition.X <= titleBarHeight && mousePosition.Y <= titleBarHeight)
                 {
                     // ... close if double click.
@@ -387,7 +374,7 @@ namespace LordJZ.Presentation.Controls
                     }
 
                     // ... or show the menu.
-                    ShowSystemMenuPhysicalCoordinates(this, PointToScreen(new Point(0, titleBarHeight)));
+                    ShowSystemMenuPixels(this, PointToScreen(new Point(0, titleBarHeight)));
                 }
                 // ... double click on the title bar ...
                 else if (e.ClickCount >= 2 && this.CanResize())
@@ -396,7 +383,7 @@ namespace LordJZ.Presentation.Controls
                     WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
 
                     // prevent mousemove event
-                    m_previousCursorPosition = GetCorrectCursorPosition();
+                    m_previousCursorPosition = GetCorrectCursorPositionPixels();
                 }
                 // ... single click on the title bar ...
                 else if (WindowState == WindowState.Normal)
@@ -409,45 +396,7 @@ namespace LordJZ.Presentation.Controls
         {
             // Right-click on the title bar without left button down should open the system menu
             if (e.ChangedButton == MouseButton.Right && e.LeftButton != MouseButtonState.Pressed)
-                ShowSystemMenuPhysicalCoordinates(this, this.PointToScreen(GetCorrectCursorPosition(this)));
-        }
-
-        // returns units
-        [Pure]
-        private static Point GetCorrectCursorPosition(Visual relativeTo)
-        {
-            Contract.Requires(relativeTo != null);
-
-            return relativeTo.PointFromScreen(GetCorrectCursorPosition());
-        }
-
-        // returns pixels
-        [Pure]
-        private static Point GetCorrectCursorPosition()
-        {
-            UnsafeNativeMethods.Win32Point w32Mouse;
-            UnsafeNativeMethods.GetCursorPos(out w32Mouse);
-            return new Point(w32Mouse.X, w32Mouse.Y);
-        }
-
-        Point PixelsToUnits(Point pixels)
-        {
-            return TransformFromDevice.Transform(pixels);
-        }
-
-        Matrix TransformFromDevice
-        {
-            get { return PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice; }
-        }
-
-        Point UnitsToPixels(Point units)
-        {
-            return TransformToDevice.Transform(units);
-        }
-
-        Matrix TransformToDevice
-        {
-            get { return PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice; }
+                ShowSystemMenuPixels(this, this.PointToScreen(GetCorrectCursorPosition(this)));
         }
 
         Point m_previousCursorPosition;
@@ -460,14 +409,14 @@ namespace LordJZ.Presentation.Controls
                 && this.CanResize())
             {
                 // Calculating correct left coordinate for multi-screen system.
-                Point mouseAbsolute = GetCorrectCursorPosition();
+                Point mouseAbsolute = GetCorrectCursorPositionPixels();
                 if (m_previousCursorPosition == mouseAbsolute)
                     return;
 
                 m_previousCursorPosition = mouseAbsolute;
 
                 Point mouseRelative = this.PointFromScreen(mouseAbsolute);
-                mouseAbsolute = PixelsToUnits(mouseAbsolute);
+                mouseAbsolute = PointFromScreenAbsolute(mouseAbsolute);
                 double width = RestoreBounds.Width;
                 double left = mouseAbsolute.X - width / 2;
 
@@ -490,23 +439,6 @@ namespace LordJZ.Presentation.Controls
 
                 DragMove();
             }
-        }
-
-        private static void ShowSystemMenuPhysicalCoordinates(Window window, Point physicalScreenLocation)
-        {
-            Contract.Requires(window != null);
-
-            BaseWindow baseWindow = window as BaseWindow;
-            NativeWindow nw = baseWindow != null ? baseWindow.NativeWindow : window.GetNativeWindow();
-
-            IntPtr hwnd = nw.Handle.Value;
-            IntPtr hmenu = UnsafeNativeMethods.GetSystemMenu(hwnd, false);
-
-            var cmd = UnsafeNativeMethods.TrackPopupMenuEx(hmenu, Constants.TPM_LEFTBUTTON | Constants.TPM_RETURNCMD,
-                                                           (int)physicalScreenLocation.X, (int)physicalScreenLocation.Y,
-                                                           hwnd, IntPtr.Zero);
-            if (0 != cmd)
-                UnsafeNativeMethods.PostMessage(hwnd, Constants.SYSCOMMAND, new IntPtr(cmd), IntPtr.Zero);
         }
 
         #endregion
@@ -644,6 +576,100 @@ namespace LordJZ.Presentation.Controls
 
             return returnval;
         }
+
+        #endregion
+
+        #region Helpers
+
+        static void ShowSystemMenuPixels(Window window, Point physicalScreenLocation)
+        {
+            Contract.Requires(window != null);
+
+            INativeWindowWrapper nww = window as INativeWindowWrapper;
+            NativeWindow nw = nww != null ? nww.NativeWindow : window.GetNativeWindow();
+
+            IntPtr hwnd = nw.Handle.Value;
+            IntPtr hmenu = UnsafeNativeMethods.GetSystemMenu(hwnd, false);
+
+            var cmd = UnsafeNativeMethods.TrackPopupMenuEx(hmenu, Constants.TPM_LEFTBUTTON | Constants.TPM_RETURNCMD,
+                                                           (int)physicalScreenLocation.X, (int)physicalScreenLocation.Y,
+                                                           hwnd, IntPtr.Zero);
+            if (0 != cmd)
+                UnsafeNativeMethods.PostMessage(hwnd, Constants.SYSCOMMAND, new IntPtr(cmd), IntPtr.Zero);
+        }
+
+        void SetDefaultBackgroundColor()
+        {
+            var bgSolidColorBrush = this.Background as SolidColorBrush;
+
+            if (bgSolidColorBrush != null)
+                this.SetDefaultBackgroundColor(bgSolidColorBrush.Color);
+        }
+
+        [Pure]
+        bool CanResize()
+        {
+            return ResizeMode == ResizeMode.CanResizeWithGrip || ResizeMode == ResizeMode.CanResize;
+        }
+
+        [Pure]
+        static Point GetCorrectCursorPosition(Visual relativeTo)
+        {
+            Contract.Requires(relativeTo != null);
+
+            return relativeTo.PointFromScreen(GetCorrectCursorPositionPixels());
+        }
+
+        [Pure]
+        static Point GetCorrectCursorPositionPixels()
+        {
+            UnsafeNativeMethods.Win32Point w32Mouse;
+            UnsafeNativeMethods.GetCursorPos(out w32Mouse);
+            return new Point(w32Mouse.X, w32Mouse.Y);
+        }
+
+        #region DPI
+
+        CompositionTarget CompositionTarget
+        {
+            get
+            {
+                // check if the visual is attached to source
+                {
+                    PresentationSource source = PresentationSource.FromVisual(this);
+                    if (source != null)
+                        return source.CompositionTarget;
+                }
+
+                // create new source
+                using (HwndSource source = new HwndSource(new HwndSourceParameters()))
+                    return source.CompositionTarget;
+            }
+        }
+
+        [Pure]
+        public Point PointFromScreenAbsolute(Point pixels)
+        {
+            return TransformFromDevice.Transform(pixels);
+        }
+
+        public Matrix TransformFromDevice
+        {
+            get { return this.CompositionTarget.TransformFromDevice; }
+        }
+
+        [Pure]
+        public Point PointToScreenAbsolute(Point units)
+        {
+            return TransformToDevice.Transform(units);
+        }
+
+        public Matrix TransformToDevice
+        {
+            get { return this.CompositionTarget.TransformToDevice; }
+        }
+
+        #endregion
 
         #endregion
     }
