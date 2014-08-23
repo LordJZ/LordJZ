@@ -181,7 +181,6 @@
     <Compile Include="NativeRect.cs" />
     <Compile Include="WindowPlacementFlags.cs" />
     <Compile Include="WindowShow.cs" />
-    <Compile Include="SystemInfo.cs" />
     <Compile Include="WindowAttribute.cs" />
     <Compile Include="Native\Constants.cs" />
     <Compile Include="Native\CREATESTRUCT.cs" />
