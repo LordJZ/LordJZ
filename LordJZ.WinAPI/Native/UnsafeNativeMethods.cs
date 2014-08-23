@@ -228,6 +228,10 @@ namespace LordJZ.WinAPI.Native
         [DllImport(shcore)]
         internal static extern int SetProcessDpiAwareness(ProcessDpiAwareness awareness);
 
+        [DllImport(shcore)]
+        internal static extern int GetDpiForMonitor([In] IntPtr hMonitor, [In] int dpiType,
+                                                    [Out] out uint dpiX, [Out] out uint dpiY);
+
         #endregion
 
         internal static void PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam)

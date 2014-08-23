@@ -28,7 +28,7 @@ namespace LordJZ.Presentation
         {
             Contract.Requires(visual != null);
 
-            var source = PresentationSource.FromVisual(visual) as HwndSource;
+            HwndSource source = visual.GetHwndSource();
             Contract.Assume(source != null);
 
             return new NativeWindow(new Handle(source.Handle));

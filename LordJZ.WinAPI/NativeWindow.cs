@@ -55,6 +55,21 @@ namespace LordJZ.WinAPI
             return info;
         }
 
+        public NativePoint MonitorDpi
+        {
+            get
+            {
+                IntPtr hMonitor = UnsafeNativeMethods.MonitorFromWindow(this.Handle.Value,
+                                                                        (int)MonitorFallbackKind.Nearest);
+
+                uint x, y;
+                UnsafeNativeMethods.GetDpiForMonitor(hMonitor, 0, out x, out y)
+                                   .EnsureNoWin32Error();
+
+                return new NativePoint(checked((int)x), checked((int)y));
+            }
+        }
+
         #endregion
 
         public WindowPlacement Placement

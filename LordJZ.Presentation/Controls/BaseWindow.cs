@@ -15,6 +15,7 @@ namespace LordJZ.Presentation.Controls
     /// <remarks>
     /// Partially taken from MahApps.Metro.
     /// </remarks>
+    [TemplatePart(Name = PART_ScalingContainer, Type = typeof(FrameworkElement))]
     [TemplatePart(Name = PART_TitleBar, Type = typeof(FrameworkElement))]
     [TemplatePart(Name = PART_Border, Type = typeof(Border))]
     [TemplatePart(Name = PART_CloseButton, Type = typeof(Button))]
@@ -22,6 +23,9 @@ namespace LordJZ.Presentation.Controls
     [TemplatePart(Name = PART_MinimizeButton, Type = typeof(Button))]
     public class BaseWindow : Window, INativeWindowWrapper
     {
+        public static bool PerMonitorDpiAware { get; set; }
+
+        const string PART_ScalingContainer = "PART_ScalingContainer";
         const string PART_TitleBar = "PART_TitleBar";
         const string PART_Border = "PART_Border";
         const string PART_CloseButton = "PART_CloseButton";
@@ -332,9 +336,10 @@ namespace LordJZ.Presentation.Controls
             // set the default background color of the window -> this avoids the black stripes when resizing
             this.SetDefaultBackgroundColor();
 
-            var source = this.GetHwndSource();
-            Contract.Assert(source != null);
-            source.AddHook(HwndSourceHook);
+            this.AddHook(HwndSourceHook);
+
+            if (PerMonitorDpiAware)
+                this.OnDpiChanged();
         }
 
         #endregion
@@ -572,9 +577,90 @@ namespace LordJZ.Presentation.Controls
                     if (this.ResizeMode == ResizeMode.NoResize || this.WindowState == WindowState.Maximized)
                         UnsafeNativeMethods.EnableMenuItem(systemMenu.Value, Constants.SC_SIZE, Constants.MF_GRAYED | Constants.MF_BYCOMMAND);
                     break;
+
+                case Constants.WM_DPICHANGED:
+                    if (!PerMonitorDpiAware)
+                        break;
+
+                    NativeRect rect = (NativeRect)Marshal.PtrToStructure(lParam, typeof(NativeRect));
+                    DpiChangedMessage(ref rect);
+                    break;
             }
 
             return returnval;
+        }
+
+        #endregion
+
+        #region DPI
+
+        void DpiChangedMessage(ref NativeRect rect)
+        {
+            UnsafeNativeMethods.SetWindowPos(this.NativeWindow.Handle.Value, IntPtr.Zero,
+                                             rect.Left, rect.Top, rect.Right - rect.Left,
+                                             rect.Bottom - rect.Top,
+                                             0x0004 | 0x0200 | 0x0010);
+
+            this.OnDpiChanged();
+        }
+
+        public event EventHandler DpiChanged;
+
+        protected virtual void OnDpiChanged()
+        {
+            UpdateLayoutTransform();
+
+            EventHandler handler = this.DpiChanged;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
+        void UpdateLayoutTransform()
+        {
+            FrameworkElement container = this.GetTemplateChild(PART_ScalingContainer) as FrameworkElement;
+            if (container == null)
+                return;
+
+            ScaleTransform scale = container.GetValue(LayoutTransformProperty) as ScaleTransform;
+
+            NativePoint dpi = this.NativeWindow.MonitorDpi;
+
+            Point wpfScale = PointFromScreenAbsolute(dpi.ToPoint());
+
+            double scaleX = wpfScale.X / 96.0;
+            double scaleY = wpfScale.Y / 96.0;
+
+            // ReSharper disable CompareOfFloatsByEqualityOperator
+
+            if (scale != null && scale.ScaleX == scaleX && scale.ScaleY == scaleY)
+                return;
+
+            container.SetValue(LayoutTransformProperty,
+                               scaleX != 1.0 || scaleY != 1.0 ? new ScaleTransform(scaleX, scaleY) : null);
+
+            // ReSharper restore CompareOfFloatsByEqualityOperator	
+        }
+
+        [Pure]
+        public Point PointFromScreenAbsolute(Point pixels)
+        {
+            return TransformFromDevice.Transform(pixels);
+        }
+
+        public Matrix TransformFromDevice
+        {
+            get { return this.CompositionTarget.TransformFromDevice; }
+        }
+
+        [Pure]
+        public Point PointToScreenAbsolute(Point units)
+        {
+            return TransformToDevice.Transform(units);
+        }
+
+        public Matrix TransformToDevice
+        {
+            get { return this.CompositionTarget.TransformToDevice; }
         }
 
         #endregion
@@ -628,8 +714,6 @@ namespace LordJZ.Presentation.Controls
             return new Point(w32Mouse.X, w32Mouse.Y);
         }
 
-        #region DPI
-
         CompositionTarget CompositionTarget
         {
             get
@@ -646,30 +730,6 @@ namespace LordJZ.Presentation.Controls
                     return source.CompositionTarget;
             }
         }
-
-        [Pure]
-        public Point PointFromScreenAbsolute(Point pixels)
-        {
-            return TransformFromDevice.Transform(pixels);
-        }
-
-        public Matrix TransformFromDevice
-        {
-            get { return this.CompositionTarget.TransformFromDevice; }
-        }
-
-        [Pure]
-        public Point PointToScreenAbsolute(Point units)
-        {
-            return TransformToDevice.Transform(units);
-        }
-
-        public Matrix TransformToDevice
-        {
-            get { return this.CompositionTarget.TransformToDevice; }
-        }
-
-        #endregion
 
         #endregion
     }

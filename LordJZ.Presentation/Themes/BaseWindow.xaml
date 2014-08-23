@@ -46,7 +46,7 @@
   </Style>
 
   <ControlTemplate x:Key="WindowTemplateKey" TargetType="{x:Type pc:BaseWindow}">
-    <Grid Background="{TemplateBinding Background}">
+    <Grid Background="{TemplateBinding Background}" Name="PART_ScalingContainer">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
