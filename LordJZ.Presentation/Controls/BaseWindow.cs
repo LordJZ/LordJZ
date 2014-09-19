@@ -647,6 +647,13 @@ namespace LordJZ.Presentation.Controls
             return TransformFromDevice.Transform(pixels);
         }
 
+        [Pure]
+        public Size PointFromScreenAbsolute(Size pixels)
+        {
+            Point units = TransformFromDevice.Transform(new Point(pixels.Width, pixels.Height));
+            return new Size(units.X, units.Y);
+        }
+
         public Matrix TransformFromDevice
         {
             get { return this.CompositionTarget.TransformFromDevice; }
@@ -656,6 +663,13 @@ namespace LordJZ.Presentation.Controls
         public Point PointToScreenAbsolute(Point units)
         {
             return TransformToDevice.Transform(units);
+        }
+
+        [Pure]
+        public Size PointToScreenAbsolute(Size units)
+        {
+            Point pixels = TransformToDevice.Transform(new Point(units.Width, units.Height));
+            return new Size(pixels.X, pixels.Y);
         }
 
         public Matrix TransformToDevice
