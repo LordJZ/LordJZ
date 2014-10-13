@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -68,6 +69,56 @@ namespace LordJZ.Linq
         public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> predicate)
         {
             return System.Linq.Enumerable.Where(source, predicate);
+        }
+
+        public static bool Any<TSource>(this IEnumerable<TSource> source)
+        {
+            return System.Linq.Enumerable.Any(source);
+        }
+
+        public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            return System.Linq.Enumerable.Any(source, predicate);
+        }
+
+        public static TSource FirstOrDefault<TSource>(this IEnumerable<TSource> source)
+        {
+            return System.Linq.Enumerable.FirstOrDefault(source);
+        }
+
+        public static TSource FirstOrDefault<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            return System.Linq.Enumerable.FirstOrDefault(source, predicate);
+        }
+
+        public static TSource First<TSource>(this IEnumerable<TSource> source)
+        {
+            return System.Linq.Enumerable.First(source);
+        }
+
+        public static TSource First<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            return System.Linq.Enumerable.First(source, predicate);
+        }
+
+        public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            return System.Linq.Enumerable.OrderBy(source, keySelector);
+        }
+
+        public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(this IOrderedEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            return System.Linq.Enumerable.ThenBy(source, keySelector);
+        }
+
+        public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            return System.Linq.Enumerable.OrderBy(source, keySelector, comparer);
+        }
+
+        public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(this IOrderedEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            return System.Linq.Enumerable.ThenBy(source, keySelector, comparer);
         }
     }
 }
