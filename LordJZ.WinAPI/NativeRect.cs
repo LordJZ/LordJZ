@@ -13,12 +13,13 @@ namespace LordJZ.WinAPI
     [StructLayout(LayoutKind.Sequential, Pack = 0)]
     public struct NativeRect
     {
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
+        public int Left { get; set; }
+        public int Top { get; set; }
+        public int Right { get; set; }
+        public int Bottom { get; set; }
 
         public NativeRect(int left, int top, int right, int bottom)
+            : this()
         {
             this.Left = left;
             this.Top = top;

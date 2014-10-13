@@ -10,9 +10,9 @@ namespace LordJZ.WinAPI
         internal int length = Size;
         int flags;
         int showCmd;
-        public NativePoint MinPosition;
-        public NativePoint MaxPosition;
-        public NativeRect NormalPosition;
+        public NativePoint MinPosition { get; set; }
+        public NativePoint MaxPosition { get; set; }
+        public NativeRect NormalPosition { get; set; }
 
         public WindowShow Show
         {
