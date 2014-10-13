@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using LordJZ.WinAPI.Native;
@@ -10,6 +11,35 @@ namespace LordJZ.WinAPI
 {
     public struct NativeWindow
     {
+        #region Statics
+
+        public static NativeWindow[] Enumerate()
+        {
+            List<NativeWindow> list = new List<NativeWindow>();
+
+            UnsafeNativeMethods.EnumWindows((hwnd, opaque) =>
+                                            {
+                                                list.Add(new NativeWindow(new Handle(hwnd)));
+                                                return true;
+                                            },
+                                            IntPtr.Zero)
+                               .EnsureNoWin32Error();
+
+            return list.ToArray();
+        }
+
+        public static NativeWindow Active
+        {
+            get { return new NativeWindow(new Handle(UnsafeNativeMethods.GetActiveWindow())); }
+        }
+
+        public static NativeWindow Foreground
+        {
+            get { return new NativeWindow(new Handle(UnsafeNativeMethods.GetForegroundWindow())); }
+        }
+
+        #endregion
+
         #region Fields
 
         readonly Handle m_handle;
@@ -30,6 +60,47 @@ namespace LordJZ.WinAPI
         public Handle Handle
         {
             get { return m_handle; }
+        }
+
+        public bool IsValid
+        {
+            get { return UnsafeNativeMethods.IsWindow(this.Handle.Value); }
+        }
+
+        public string Text
+        {
+            get
+            {
+                int length = (int)UnsafeNativeMethods.SendMessage(new HandleRef(this, this.Handle.Value), Constants.WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero);
+                StringBuilder sb = new StringBuilder(length + 1);
+                UnsafeNativeMethods.SendMessage(new HandleRef(this, this.Handle.Value), Constants.WM_GETTEXT, (IntPtr)sb.Capacity, sb);
+                return sb.ToString();
+            }
+            set
+            {
+                UnsafeNativeMethods.SendMessage(new HandleRef(this, this.Handle.Value), Constants.WM_SETTEXT, IntPtr.Zero, value);
+            }
+        }
+
+        public string ClassName
+        {
+            get
+            {
+                int length = 64;
+                while (true)
+                {
+                    StringBuilder sb = new StringBuilder(length);
+
+                    int written = UnsafeNativeMethods.GetClassName(this.Handle.Value, sb, sb.Capacity);
+
+                    Win32Error.EnsureNoWin32Error(written != 0);
+
+                    if (sb.Length != length - 1)
+                        return sb.ToString();
+
+                    length += length >> 1;
+                }
+            }
         }
 
         #region Monitor

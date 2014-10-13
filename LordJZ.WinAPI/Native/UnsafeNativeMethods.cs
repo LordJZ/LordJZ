@@ -42,6 +42,15 @@ namespace LordJZ.WinAPI.Native
 
         #region user32
 
+        [DllImport(user32, CharSet = CharSet.Auto)]
+        internal static extern IntPtr SendMessage(HandleRef hWnd, int Msg, IntPtr wParam, [Out] StringBuilder lParam);
+
+        [DllImport(user32, CharSet = CharSet.Auto)]
+        internal static extern IntPtr SendMessage(HandleRef hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPTStr), In] string lParam);
+
+        [DllImport(user32, CharSet = CharSet.Auto)]
+        internal static extern IntPtr SendMessage(HandleRef hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
         /// <devdoc>http://msdn.microsoft.com/en-us/library/windows/desktop/ms633572%28v=vs.85%29.aspx</devdoc>
         [DllImport(user32, CallingConvention = CallingConvention.Winapi)]
         internal static extern IntPtr DefWindowProc([In] IntPtr hwnd, [In] int msg, [In] IntPtr wParam, [In] IntPtr lParam);
@@ -60,6 +69,21 @@ namespace LordJZ.WinAPI.Native
 
         [DllImport(user32)]
         internal static extern IntPtr MonitorFromRect([In] ref NativeRect rect, [In] int flags);
+
+        [DllImport(user32)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        internal delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr lParam);
+
+        [DllImport(user32)]
+        internal static extern IntPtr GetActiveWindow();
+
+        [DllImport(user32)]
+        internal static extern IntPtr GetForegroundWindow();
+
+        [DllImport(user32)]
+        internal static extern int GetClassName(IntPtr hWnd, [Out] StringBuilder lpClassName, int nMaxCount);
 
         /// <devdoc>http://msdn.microsoft.com/en-us/library/windows/desktop/ms633545(v=vs.85).aspx</devdoc>
         [DllImport(user32)]
