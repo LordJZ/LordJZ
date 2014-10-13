@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using LordJZ.WinAPI.Native;
 
@@ -56,5 +57,9 @@ namespace LordJZ.WinAPI
 
         #endregion
 
+        public override string ToString()
+        {
+            return "[" + m_x.ToString(CultureInfo.InvariantCulture) + "," + m_y.ToString(CultureInfo.InvariantCulture) + "]";
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -59,5 +60,12 @@ namespace LordJZ.WinAPI
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture,
+                                 "[Left={0},Right={1},Top={2},Buttom={3}]",
+                                 Left, Right, Top, Bottom);
+        }
     }
 }
