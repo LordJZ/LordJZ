@@ -46,15 +46,23 @@
   </Style>
 
   <ControlTemplate x:Key="WindowTemplateKey" TargetType="{x:Type pc:BaseWindow}">
-    <Grid Background="{TemplateBinding Background}" Name="PART_ScalingContainer">
+    <Grid Name="PART_ScalingContainer">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
 
-      <Grid x:Name="PART_TitleBar"
+      <Border Grid.Row="0" Grid.RowSpan="2" x:Name="PART_Background"
+              Background="{TemplateBinding Background}"/>
+
+      <Border Grid.Row="0" Grid.RowSpan="2" x:Name="PART_Border"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"/>
+
+      <Grid Grid.Row="0"
+            x:Name="PART_TitleBar"
             Background="{TemplateBinding TitleBarBackground}"
-            Height="{TemplateBinding TitleBarHeight}">
+            Height="{TemplateBinding TitleBarHeight}" Margin="{TemplateBinding BorderThickness}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*"/>
           <ColumnDefinition Width="Auto" />
@@ -103,11 +111,7 @@
         </StackPanel>
       </Grid>
 
-      <Border Grid.RowSpan="2" x:Name="PART_Border"
-              BorderBrush="{TemplateBinding BorderBrush}"
-              BorderThickness="{TemplateBinding BorderThickness}"/>
-
-      <ContentPresenter Grid.Row="1" Margin="2"/>
+      <ContentPresenter Grid.Row="1" x:Name="PART_ContentPresenter"/>
 
       <ResizeGrip Grid.Row="1" x:Name="WindowResizeGrip" IsTabStop="false" Visibility="Collapsed"
                   HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
@@ -144,10 +148,15 @@
         <Setter TargetName="PART_TitleBarDefaultContent" Property="Visibility" Value="Collapsed"/>
         <Setter TargetName="PART_TitleBarContentPresenter" Property="Visibility" Value="Visible"/>
       </Trigger>
+
+      <Trigger Property="WindowStyle" Value="None">
+        <Setter TargetName="PART_TitleBar" Property="Visibility" Value="Collapsed"/>
+        <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed"/>
+      </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
 
-  <System:Double x:Key="WindowTitleBarHeight">24</System:Double>
+  <System:Double x:Key="WindowTitleBarHeight">22</System:Double>
   <SolidColorBrush x:Key="WindowTitleBarBackgroundBrush">LightGray</SolidColorBrush>
   <SolidColorBrush x:Key="WindowBackground">#F0F0F0</SolidColorBrush>
   <SolidColorBrush x:Key="WindowBorderBrush">#B8B8B8</SolidColorBrush>

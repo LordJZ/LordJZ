@@ -21,6 +21,7 @@ namespace LordJZ.Presentation.Controls
     [TemplatePart(Name = PART_CloseButton, Type = typeof(Button))]
     [TemplatePart(Name = PART_MaximizeRestoreButton, Type = typeof(Button))]
     [TemplatePart(Name = PART_MinimizeButton, Type = typeof(Button))]
+    [TemplatePart(Name = PART_ContentPresenter, Type = typeof(ContentPresenter))]
     public class BaseWindow : Window, INativeWindowWrapper
     {
         public static bool PerMonitorDpiAware { get; set; }
@@ -31,6 +32,8 @@ namespace LordJZ.Presentation.Controls
         const string PART_CloseButton = "PART_CloseButton";
         const string PART_MaximizeRestoreButton = "PART_MaximizeRestoreButton";
         const string PART_MinimizeButton = "PART_MinimizeButton";
+        const string PART_ContentPresenter = "PART_ContentPresenter";
+        const int ResizeHandleSizeUnits = 6;
 
         #region Dependency Properties
 
@@ -225,6 +228,9 @@ namespace LordJZ.Presentation.Controls
             }
         }
 
+        public ContentPresenter WindowContentPresenter { get { return m_contentPresenter; } }
+        public FrameworkElement WindowTitleBar { get { return m_titleBar; } }
+
         #endregion
 
         #region Constructors
@@ -269,6 +275,8 @@ namespace LordJZ.Presentation.Controls
         Button m_closeButton;
         Button m_maximizeRestoreButton;
         Button m_minimizeButton;
+        ContentPresenter m_contentPresenter;
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -324,14 +332,13 @@ namespace LordJZ.Presentation.Controls
             #endregion
 
             m_border = this.GetTemplateChild(PART_Border) as Border;
+
+            m_contentPresenter = this.GetTemplateChild(PART_ContentPresenter) as ContentPresenter;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-
-            this.SetNonClientRenderingPolicy(NonClientRenderingPolicy.Enabled);
-            this.ExtendFrameIntoClientArea(new Thickness(1));
 
             // set the default background color of the window -> this avoids the black stripes when resizing
             this.SetDefaultBackgroundColor();
@@ -438,7 +445,8 @@ namespace LordJZ.Presentation.Controls
 
                 // When dragging the window down at the very top of the border,
                 // move the window a bit upwards to avoid showing the resize handle as soon as the mouse button is released
-                Top = mouseRelative.Y < 5 ? -5 : mouseAbsolute.Y - mouseRelative.Y;
+                double height = ResizeHandleSizePixels.Height;
+                Top = mouseRelative.Y < height ? -height : mouseAbsolute.Y - mouseRelative.Y;
                 Left = left;
 
 
@@ -481,8 +489,16 @@ namespace LordJZ.Presentation.Controls
                          * "does not repaint the nonclient area to reflect the state change." */
                         returnval = UnsafeNativeMethods.DefWindowProc(this.NativeWindow.Handle.Value, message, wParam, new IntPtr(-1));
 
-                        if (m_border != null)
-                            m_border.Opacity = wParam == IntPtr.Zero ? 1.0 : 0.5;
+                        if (m_border != null || m_titleBar != null)
+                        {
+                            double opacity = wParam != IntPtr.Zero ? 1.0 : 0.5;
+
+                            if (m_border != null)
+                                m_border.Opacity = opacity;
+
+                            if (m_titleBar != null)
+                                m_titleBar.Opacity = opacity;
+                        }
 
                         handled = true;
                     }
@@ -498,18 +514,20 @@ namespace LordJZ.Presentation.Controls
                 case Constants.WM_NCHITTEST:
 
                     // don't process the message on windows that can't be resized
-                    var resizeMode = this.ResizeMode;
-                    if (resizeMode == ResizeMode.CanMinimize || resizeMode == ResizeMode.NoResize || this.WindowState == WindowState.Maximized)
+                    if (!CanResize() || this.WindowState == WindowState.Maximized)
                         break;
 
                     // get X & Y out of the message                   
                     var screenPoint = new Point(UnsafeNativeMethods.GET_X_LPARAM(lParam), UnsafeNativeMethods.GET_Y_LPARAM(lParam));
 
+                    var resizeHandleWidth = this.ResizeHandleSizePixels.Width;
+                    var resizeHandleHeight = this.ResizeHandleSizePixels.Height;
+
                     // convert to window coordinates
                     var windowPoint = this.PointFromScreen(screenPoint);
                     var windowSize = this.RenderSize;
                     var windowRect = new Rect(windowSize);
-                    windowRect.Inflate(-6, -6);
+                    windowRect.Inflate(-resizeHandleWidth, -resizeHandleHeight);
 
                     // don't process the message if the mouse is outside the 6px resize border
                     if (windowRect.Contains(windowPoint))
@@ -519,16 +537,17 @@ namespace LordJZ.Presentation.Controls
                     var windowWidth = (int)windowSize.Width;
 
                     // create the rectangles where resize arrows are shown
-                    var topLeft = new Rect(0, 0, 6, 6);
-                    var top = new Rect(6, 0, windowWidth - 12, 6);
-                    var topRight = new Rect(windowWidth - 6, 0, 6, 6);
+                    var topLeft = new Rect(0, 0, resizeHandleWidth, resizeHandleHeight);
+                    var top = new Rect(resizeHandleWidth, 0, windowWidth - resizeHandleWidth - resizeHandleWidth, resizeHandleHeight);
+                    var topRight = new Rect(windowWidth - resizeHandleWidth, 0, resizeHandleWidth, resizeHandleHeight);
 
-                    var left = new Rect(0, 6, 6, windowHeight - 12);
-                    var right = new Rect(windowWidth - 6, 6, 6, windowHeight - 12);
+                    var left = new Rect(0, resizeHandleHeight, resizeHandleWidth, windowHeight - resizeHandleHeight - resizeHandleHeight);
+                    var right = new Rect(windowWidth - resizeHandleWidth, resizeHandleHeight, resizeHandleWidth, windowHeight - resizeHandleHeight - resizeHandleHeight);
 
-                    var bottomLeft = new Rect(0, windowHeight - 6, 6, 6);
-                    var bottom = new Rect(6, windowHeight - 6, windowWidth - 12, 6);
-                    var bottomRight = new Rect(windowWidth - 6, windowHeight - 6, 6, 6);
+                    var bottomLeft = new Rect(0, windowHeight - resizeHandleHeight, resizeHandleWidth, resizeHandleHeight);
+                    var bottom = new Rect(resizeHandleWidth, windowHeight - resizeHandleHeight, windowWidth - resizeHandleWidth - resizeHandleWidth, resizeHandleHeight);
+                    var bottomRight = new Rect(windowWidth - resizeHandleWidth, windowHeight - resizeHandleHeight,
+                                               resizeHandleWidth, resizeHandleHeight);
 
                     // check if the mouse is within one of the rectangles
                     if (topLeft.Contains(windowPoint))
@@ -594,6 +613,8 @@ namespace LordJZ.Presentation.Controls
 
         #region DPI
 
+        Size ResizeHandleSizePixels { get; set; }
+
         void DpiChangedMessage(ref NativeRect rect)
         {
             UnsafeNativeMethods.SetWindowPos(this.NativeWindow.Handle.Value, IntPtr.Zero,
@@ -609,6 +630,9 @@ namespace LordJZ.Presentation.Controls
         protected virtual void OnDpiChanged()
         {
             UpdateLayoutTransform();
+
+            this.ResizeHandleSizePixels = this.PointToScreenAbsolute(
+                new Size(ResizeHandleSizeUnits, ResizeHandleSizeUnits));
 
             EventHandler handler = this.DpiChanged;
             if (handler != null)
