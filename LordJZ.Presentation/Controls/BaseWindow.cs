@@ -514,7 +514,7 @@ namespace LordJZ.Presentation.Controls
                 case Constants.WM_NCHITTEST:
 
                     // don't process the message on windows that can't be resized
-                    if (!CanResize() || this.WindowState == WindowState.Maximized)
+                    if (!CanResize() || this.WindowState == WindowState.Maximized || PresentationSource.FromVisual(this) == null)
                         break;
 
                     // get X & Y out of the message                   
@@ -617,6 +617,16 @@ namespace LordJZ.Presentation.Controls
 
         void DpiChangedMessage(ref NativeRect rect)
         {
+            try
+            {
+                // ReSharper disable once UnusedVariable
+                var dummy = this.CompositionTarget.RootVisual;
+            }
+            catch
+            {
+                return;
+            }
+
             UnsafeNativeMethods.SetWindowPos(this.NativeWindow.Handle.Value, IntPtr.Zero,
                                              rect.Left, rect.Top, rect.Right - rect.Left,
                                              rect.Bottom - rect.Top,
