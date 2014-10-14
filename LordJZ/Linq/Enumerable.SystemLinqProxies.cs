@@ -120,5 +120,25 @@ namespace LordJZ.Linq
         {
             return System.Linq.Enumerable.ThenBy(source, keySelector, comparer);
         }
+
+        public static IOrderedEnumerable<TSource> OrderByDescending<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            return System.Linq.Enumerable.OrderByDescending(source, keySelector);
+        }
+
+        public static IOrderedEnumerable<TSource> ThenByDescending<TSource, TKey>(this IOrderedEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            return System.Linq.Enumerable.ThenByDescending(source, keySelector);
+        }
+
+        public static IOrderedEnumerable<TSource> OrderByDescending<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            return System.Linq.Enumerable.OrderByDescending(source, keySelector, comparer);
+        }
+
+        public static IOrderedEnumerable<TSource> ThenByDescending<TSource, TKey>(this IOrderedEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            return System.Linq.Enumerable.ThenByDescending(source, keySelector, comparer);
+        }
     }
 }
