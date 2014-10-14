@@ -43,10 +43,40 @@ namespace LordJZ.WinAPI.Native
         #region user32
 
         [DllImport(user32, CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessageTimeout(
+            HandleRef hWnd,
+            int Msg,
+            IntPtr wParam,
+            [Out] StringBuilder lParam,
+            SendMessageTimeoutFlags flags,
+            uint timeout,
+            out IntPtr result);
+
+        [DllImport(user32, CharSet = CharSet.Auto)]
         internal static extern IntPtr SendMessage(HandleRef hWnd, int Msg, IntPtr wParam, [Out] StringBuilder lParam);
 
         [DllImport(user32, CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessageTimeout(
+            HandleRef hWnd,
+            int Msg,
+            IntPtr wParam,
+            [MarshalAs(UnmanagedType.LPTStr), In] string lParam,
+            SendMessageTimeoutFlags flags,
+            uint timeout,
+            out IntPtr result);
+
+        [DllImport(user32, CharSet = CharSet.Auto)]
         internal static extern IntPtr SendMessage(HandleRef hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPTStr), In] string lParam);
+
+        [DllImport(user32, CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessageTimeout(
+            HandleRef hWnd,
+            int Msg,
+            IntPtr wParam,
+            IntPtr lParam,
+            SendMessageTimeoutFlags flags,
+            uint timeout,
+            out IntPtr result);
 
         [DllImport(user32, CharSet = CharSet.Auto)]
         internal static extern IntPtr SendMessage(HandleRef hWnd, int Msg, IntPtr wParam, IntPtr lParam);

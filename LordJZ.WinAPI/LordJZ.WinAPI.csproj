@@ -161,6 +161,7 @@
     <Compile Include="MonitorFlags.cs" />
     <Compile Include="NativePoint.cs" />
     <Compile Include="NativeWindow.cs" />
+    <Compile Include="Native\SendMessageTimeoutFlags.cs" />
     <Compile Include="Native\ImageDirectoryEntry.cs" />
     <Compile Include="Native\IMAGE_DATA_DIRECTORY.cs" />
     <Compile Include="Native\IMAGE_DOS_HEADER.cs" />

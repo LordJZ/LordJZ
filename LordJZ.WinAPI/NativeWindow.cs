@@ -71,14 +71,43 @@ namespace LordJZ.WinAPI
         {
             get
             {
-                int length = (int)UnsafeNativeMethods.SendMessage(new HandleRef(this, this.Handle.Value), Constants.WM_GETTEXTLENGTH, IntPtr.Zero, IntPtr.Zero);
-                StringBuilder sb = new StringBuilder(length + 1);
-                UnsafeNativeMethods.SendMessage(new HandleRef(this, this.Handle.Value), Constants.WM_GETTEXT, (IntPtr)sb.Capacity, sb);
+                const SendMessageTimeoutFlags flags =
+                    SendMessageTimeoutFlags.SMTO_NOTIMEOUTIFNOTHUNG |
+                    SendMessageTimeoutFlags.SMTO_ABORTIFHUNG |
+                    SendMessageTimeoutFlags.SMTO_ERRORONEXIT;
+
+                IntPtr length;
+
+                IntPtr result = UnsafeNativeMethods.SendMessageTimeout(
+                    new HandleRef(this, this.Handle.Value),
+                    Constants.WM_GETTEXTLENGTH,
+                    IntPtr.Zero, IntPtr.Zero,
+                    flags, 150, out length);
+
+                Win32Error.EnsureNoWin32Error(result != IntPtr.Zero);
+
+                StringBuilder sb = new StringBuilder((int)length + 1);
+                result = UnsafeNativeMethods.SendMessageTimeout(
+                    new HandleRef(this, this.Handle.Value),
+                    Constants.WM_GETTEXT,
+                    (IntPtr)sb.Capacity, sb,
+                    flags, 150, out length);
+
+                Win32Error.EnsureNoWin32Error(result != IntPtr.Zero);
+
                 return sb.ToString();
             }
             set
             {
-                UnsafeNativeMethods.SendMessage(new HandleRef(this, this.Handle.Value), Constants.WM_SETTEXT, IntPtr.Zero, value);
+                const SendMessageTimeoutFlags flags =
+                    SendMessageTimeoutFlags.SMTO_NOTIMEOUTIFNOTHUNG |
+                    SendMessageTimeoutFlags.SMTO_ABORTIFHUNG |
+                    SendMessageTimeoutFlags.SMTO_ERRORONEXIT;
+
+                IntPtr length;
+                IntPtr result = UnsafeNativeMethods.SendMessageTimeout(new HandleRef(this, this.Handle.Value), Constants.WM_SETTEXT, IntPtr.Zero, value, flags, 150, out length);
+
+                Win32Error.EnsureNoWin32Error(result != IntPtr.Zero);
             }
         }
 
