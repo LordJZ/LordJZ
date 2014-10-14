@@ -345,8 +345,7 @@ namespace LordJZ.Presentation.Controls
 
             this.AddHook(HwndSourceHook);
 
-            if (PerMonitorDpiAware)
-                this.OnDpiChanged();
+            this.OnDpiChanged();
         }
 
         #endregion
