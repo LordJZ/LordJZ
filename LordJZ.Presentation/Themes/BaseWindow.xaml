@@ -128,7 +128,7 @@
 
       <!-- Window is maximized -->
       <Trigger Property="WindowState" Value="Maximized">
-        <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed"/>
+        <Setter Property="BorderThickness" Value="0"/>
 
         <!-- Maximize/Restore button behavior -->
         <Setter TargetName="PART_MaximizeRestoreButton" Property="Content"
@@ -149,8 +149,11 @@
         <Setter TargetName="PART_TitleBarContentPresenter" Property="Visibility" Value="Visible"/>
       </Trigger>
 
-      <Trigger Property="WindowStyle" Value="None">
+      <Trigger Property="TitleBarHeight" Value="0">
         <Setter TargetName="PART_TitleBar" Property="Visibility" Value="Collapsed"/>
+      </Trigger>
+
+      <Trigger Property="BorderThickness" Value="0">
         <Setter TargetName="PART_Border" Property="Visibility" Value="Collapsed"/>
       </Trigger>
     </ControlTemplate.Triggers>
