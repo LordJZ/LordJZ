@@ -444,8 +444,7 @@ namespace LordJZ.Presentation.Controls
 
                 // When dragging the window down at the very top of the border,
                 // move the window a bit upwards to avoid showing the resize handle as soon as the mouse button is released
-                double height = ResizeHandleSizePixels.Height;
-                Top = mouseRelative.Y < height ? -height : mouseAbsolute.Y - mouseRelative.Y;
+                Top = mouseAbsolute.Y < ResizeHandleSizeUnits ? -ResizeHandleSizeUnits : mouseAbsolute.Y - mouseRelative.Y;
                 Left = left;
 
 
@@ -519,8 +518,8 @@ namespace LordJZ.Presentation.Controls
                     // get X & Y out of the message                   
                     var screenPoint = new Point(UnsafeNativeMethods.GET_X_LPARAM(lParam), UnsafeNativeMethods.GET_Y_LPARAM(lParam));
 
-                    var resizeHandleWidth = this.ResizeHandleSizePixels.Width;
-                    var resizeHandleHeight = this.ResizeHandleSizePixels.Height;
+                    const int resizeHandleWidth = ResizeHandleSizeUnits;
+                    const int resizeHandleHeight = ResizeHandleSizeUnits;
 
                     // convert to window coordinates
                     var windowPoint = this.PointFromScreen(screenPoint);
@@ -612,8 +611,6 @@ namespace LordJZ.Presentation.Controls
 
         #region DPI
 
-        Size ResizeHandleSizePixels { get; set; }
-
         void DpiChangedMessage(ref NativeRect rect)
         {
             try
@@ -639,9 +636,6 @@ namespace LordJZ.Presentation.Controls
         protected virtual void OnDpiChanged()
         {
             UpdateLayoutTransform();
-
-            this.ResizeHandleSizePixels = this.PointToScreenAbsolute(
-                new Size(ResizeHandleSizeUnits, ResizeHandleSizeUnits));
 
             EventHandler handler = this.DpiChanged;
             if (handler != null)
