@@ -1,13 +1,14 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Threading;
-using LordJZ.WinAPI;
-using LordJZ.WinAPI.Native;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using LordJZ.WinAPI;
+using LordJZ.WinAPI.Native;
 using IFormsWindow = System.Windows.Forms.IWin32Window;
 using IPresentationWindow = System.Windows.Interop.IWin32Window;
 
@@ -328,6 +329,53 @@ namespace LordJZ.Presentation
 
             if (!window.IsActive)
                 window.Activate();
+        }
+
+        public static ImageSource ToImageSource(this System.Drawing.Bitmap bitmap)
+        {
+            ImageSource imageSource;
+            IntPtr hBitmap = bitmap.GetHbitmap();
+
+            try
+            {
+                imageSource = Imaging.CreateBitmapSourceFromHBitmap(
+                    hBitmap,
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+            }
+            finally
+            {
+                UnsafeNativeMethods.DeleteObject(hBitmap);
+            }
+
+            return imageSource;
+        }
+
+        static readonly double s_d96 = 96.0;
+        static readonly object s_o96 = s_d96;
+
+        public static void SetDpi(this BitmapSource bitmapSource, double dpiX, double dpiY)
+        {
+            const System.Reflection.BindingFlags flags =
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic;
+
+            Type type = bitmapSource.GetType();
+
+            System.Reflection.FieldInfo fi = type.GetField("_dpiX", flags);
+            if (fi == null)
+                throw new Exception("Failed to change DPI.");
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            fi.SetValue(bitmapSource, dpiX == s_d96 ? s_o96 : dpiX);
+
+            fi = type.GetField("_dpiY", flags);
+            if (fi == null)
+                throw new Exception("Failed to change DPI.");
+
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            fi.SetValue(bitmapSource, dpiY == s_d96 ? s_o96 : dpiY);
         }
     }
 }
