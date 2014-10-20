@@ -67,6 +67,33 @@ namespace LordJZ.WinAPI
             get { return UnsafeNativeMethods.IsWindow(this.Handle.Value); }
         }
 
+        public void GetThreadProcessId(out int threadId, out int processId)
+        {
+            threadId = UnsafeNativeMethods.GetWindowThreadProcessId(this.Handle.Value, out processId);
+            Win32Error.EnsureNoWin32Error(threadId != 0);
+            Win32Error.EnsureNoWin32Error(processId != 0);
+        }
+
+        public int ThreadId
+        {
+            get
+            {
+                int tid, pid;
+                GetThreadProcessId(out tid, out pid);
+                return tid;
+            }
+        }
+
+        public int ProcessId
+        {
+            get
+            {
+                int tid, pid;
+                GetThreadProcessId(out tid, out pid);
+                return pid;
+            }
+        }
+
         public string Text
         {
             get

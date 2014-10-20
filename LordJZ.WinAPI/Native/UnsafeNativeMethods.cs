@@ -164,6 +164,9 @@ namespace LordJZ.WinAPI.Native
         [DllImport(user32)]
         internal static extern uint EnableMenuItem(IntPtr hMenu, uint itemId, uint uEnable);
 
+        [DllImport(user32, SetLastError = true)]
+        internal static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+
         #endregion
 
         #region kernel32
