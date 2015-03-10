@@ -78,6 +78,11 @@ namespace LordJZ.WinAPI
             return new Process(handle);
         }
 
+        public static Process Current
+        {
+            get { return new Process(new Handle(UnsafeNativeMethods.GetCurrentProcess())); }
+        }
+
         #endregion
 
         #region Fields
@@ -114,6 +119,17 @@ namespace LordJZ.WinAPI
                                    .EnsureNoWin32Error();
                 return result;
             }
+        }
+
+        public ProcessPriority Priority
+        {
+            get
+            {
+                ProcessPriority ret = UnsafeNativeMethods.GetPriorityClass(m_handle.Value);
+                (ret == default(ProcessPriority)).EnsureNoWin32Error();
+                return ret;
+            }
+            set { UnsafeNativeMethods.SetPriorityClass(m_handle.Value, value).EnsureNoWin32Error(); }
         }
 
         #endregion

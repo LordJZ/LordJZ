@@ -190,6 +190,9 @@ namespace LordJZ.WinAPI.Native
                                                   [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle,
                                                   int dwProcessId);
 
+        [DllImport(kernel32)]
+        internal static extern IntPtr GetCurrentProcess();
+
         [DllImport(kernel32, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool CloseHandle(IntPtr hObject);
@@ -234,6 +237,12 @@ namespace LordJZ.WinAPI.Native
         public static extern bool IsWow64Process([In] IntPtr processHandle,
                                                  [Out, MarshalAs(UnmanagedType.Bool)] out bool wow64Process);
 
+        [DllImport(kernel32, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetPriorityClass(IntPtr hProcess, ProcessPriority priorityClass);
+
+        [DllImport(kernel32, SetLastError = true)]
+        public static extern ProcessPriority GetPriorityClass(IntPtr hProcess);
         #endregion
 
         #region ntdll
