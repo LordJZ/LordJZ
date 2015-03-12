@@ -162,9 +162,25 @@ namespace LordJZ.WinAPI
             return buffer;
         }
 
+        public int ReadMemory(IntPtr position, IntPtr buffer, int count)
+        {
+            long read = ReadProcessMemory(m_handle.Value, position, buffer, count);
+            if (read != count)
+                throw new Exception();
+            return checked((int)read);
+        }
+
         public int WriteMemory(IntPtr position, byte[] buffer, int offset, int count)
         {
             long written = WriteProcessMemory(m_handle.Value, position, buffer, offset, count);
+            if (written != count)
+                throw new Exception();
+            return checked((int)written);
+        }
+
+        public int WriteMemory(IntPtr position, IntPtr buffer, int count)
+        {
+            long written = WriteProcessMemory(m_handle.Value, position, buffer, count);
             if (written != count)
                 throw new Exception();
             return checked((int)written);
@@ -232,22 +248,20 @@ namespace LordJZ.WinAPI
         {
             buffer.CheckBoundaries(offset, count);
 
-            int read;
             fixed (byte* bufferPtr = buffer)
-            {
-                IntPtr ptr = new IntPtr(bufferPtr + offset);
-                IntPtr ptrsizePosition = position;
-                IntPtr ptrsizeCount = new IntPtr(count);
-                IntPtr ptrsizeRead;
+                return ReadProcessMemory(handle, position, (IntPtr)(bufferPtr + offset), count);
+        }
 
-                UnsafeNativeMethods.ReadProcessMemory(handle, ptrsizePosition,
-                                                      ptr, ptrsizeCount, out ptrsizeRead)
-                                   .EnsureNoWin32Error();
+        internal static int ReadProcessMemory(IntPtr handle, IntPtr position, IntPtr ptr, int count)
+        {
+            IntPtr ptrsizeCount = new IntPtr(count);
+            IntPtr ptrsizeRead;
 
-                read = ptrsizeRead.ToInt32();
-            }
+            UnsafeNativeMethods.ReadProcessMemory(handle, position,
+                                                  ptr, ptrsizeCount, out ptrsizeRead)
+                               .EnsureNoWin32Error();
 
-            return read;
+            return ptrsizeRead.ToInt32();
         }
 
         internal static unsafe bool TryReadProcessMemory(IntPtr handle, IntPtr position,
@@ -257,18 +271,19 @@ namespace LordJZ.WinAPI
             buffer.CheckBoundaries(offset, count);
 
             fixed (byte* bufferPtr = buffer)
-            {
-                IntPtr ptr = new IntPtr(bufferPtr + offset);
-                IntPtr ptrsizePosition = position;
-                IntPtr ptrsizeCount = new IntPtr(count);
-                IntPtr ptrsizeRead;
+                return TryReadProcessMemory(handle, position, (IntPtr)(bufferPtr + offset), count, out read);
+        }
 
-                bool result = UnsafeNativeMethods.ReadProcessMemory(handle, ptrsizePosition,
-                                                                    ptr, ptrsizeCount, out ptrsizeRead);
+        internal static bool TryReadProcessMemory(IntPtr handle, IntPtr position, IntPtr ptr, int count, out int read)
+        {
+            IntPtr ptrsizeCount = new IntPtr(count);
+            IntPtr ptrsizeRead;
 
-                read = ptrsizeRead.ToInt32();
-                return result && read == count;
-            }
+            bool result = UnsafeNativeMethods.ReadProcessMemory(handle, position,
+                                                                ptr, ptrsizeCount, out ptrsizeRead);
+
+            read = ptrsizeRead.ToInt32();
+            return result && read == count;
         }
 
         internal static unsafe long WriteProcessMemory(IntPtr handle, IntPtr position,
@@ -276,22 +291,19 @@ namespace LordJZ.WinAPI
         {
             buffer.CheckBoundaries(offset, count);
 
-            long read;
             fixed (byte* bufferPtr = buffer)
-            {
-                IntPtr ptr = new IntPtr(bufferPtr + offset);
-                IntPtr ptrsizePosition = position;
-                IntPtr ptrsizeCount = new IntPtr(count);
-                IntPtr ptrsizeRead;
+                return WriteProcessMemory(handle, position, (IntPtr)(bufferPtr + offset), count);
+        }
 
-                UnsafeNativeMethods.WriteProcessMemory(handle, ptrsizePosition,
-                                                       ptr, ptrsizeCount, out ptrsizeRead)
-                                   .EnsureNoWin32Error();
+        internal static long WriteProcessMemory(IntPtr handle, IntPtr position, IntPtr buffer, int count)
+        {
+            IntPtr read;
 
-                read = ptrsizeRead.ToInt64();
-            }
+            UnsafeNativeMethods.WriteProcessMemory(handle, position,
+                                                   buffer, (IntPtr)count, out read)
+                               .EnsureNoWin32Error();
 
-            return read;
+            return read.ToInt64();
         }
 
         #endregion
