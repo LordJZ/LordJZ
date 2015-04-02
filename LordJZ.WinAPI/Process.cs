@@ -186,7 +186,12 @@ namespace LordJZ.WinAPI
             return checked((int)written);
         }
 
-        public unsafe string ReadCString(IntPtr position, int sizeFactor = 64)
+        public string ReadCString(IntPtr position, int sizeFactor = 64)
+        {
+            return ReadCString(Encoding.ASCII, true, position, sizeFactor);
+        }
+
+        public string ReadCString(Encoding encoding, bool singleByteTerminator, IntPtr position, int sizeFactor = 64)
         {
             if (sizeFactor <= 0)
                 throw new ArgumentOutOfRangeException("sizeFactor");
@@ -203,11 +208,14 @@ namespace LordJZ.WinAPI
                         throw new Win32Exception(Win32Error.Last);
                 }
 
-                if (Array.IndexOf(array, (byte)0, index, sizeFactor) >= 0)
-                {
-                    fixed (byte* ptr = array)
-                        return new string((sbyte*)ptr);
-                }
+                int terminatorIdx;
+                if (singleByteTerminator)
+                    terminatorIdx = FindZeroByte(array, index, sizeFactor);
+                else
+                    terminatorIdx = FindTwoZeroBytes(array, index, sizeFactor);
+
+                if (terminatorIdx >= 0)
+                    return encoding.GetString(array, 0, terminatorIdx);
 
                 index = checked(index + read);
 
@@ -225,16 +233,16 @@ namespace LordJZ.WinAPI
             ReadMemory(position, memory, 0, size);
 
             fixed (byte* structPtr = memory)
-                return (T)Marshal.PtrToStructure(new IntPtr(structPtr), structType);
+                return (T)Marshal.PtrToStructure((IntPtr)structPtr, structType);
         }
 
         /// <summary>
         /// Creates the <see cref="Stream"/> whose backing storage is
-        /// the memory space of the current <see cref="Process"/>.
+        /// the memory space of this instance of <see cref="Process"/>.
         /// </summary>
         /// <returns>
         /// A instance of <see cref="Stream"/> whose backing storage is
-        /// the memory space of the current <see cref="Process"/>.
+        /// the memory space of this instance of <see cref="Process"/>.
         /// </returns>
         public Stream GetMemoryStream()
         {
@@ -304,6 +312,28 @@ namespace LordJZ.WinAPI
                                .EnsureNoWin32Error();
 
             return read.ToInt64();
+        }
+
+        static int FindZeroByte(byte[] array, int startIndex, int count)
+        {
+            return Array.IndexOf(array, (byte)0, startIndex, count);
+        }
+
+        static int FindTwoZeroBytes(byte[] array, int startIndex, int count)
+        {
+            Contract.Requires(array != null);
+            Contract.Requires(startIndex >= 0);
+            Contract.Requires(startIndex <= array.Length);
+            Contract.Requires(count >= 0);
+            Contract.Requires(count <= array.Length - startIndex);
+
+            for (int i = startIndex, l = startIndex + count - 1; i < l; i++)
+            {
+                if (array[i] == 0 && array[i + 1] == 0)
+                    return i;
+            }
+
+            return -1;
         }
 
         #endregion
