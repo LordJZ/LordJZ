@@ -218,8 +218,9 @@ namespace LordJZ.WinAPI
                     return encoding.GetString(array, 0, terminatorIdx);
 
                 index = checked(index + read);
+                position += read;
 
-                if (array.Length - index + sizeFactor < 0)
+                if (array.Length - index - sizeFactor < 0)
                     Array.Resize(ref array, checked(array.Length * 2));
             }
         }
