@@ -243,6 +243,38 @@ namespace LordJZ.WinAPI.Native
 
         [DllImport(kernel32, SetLastError = true)]
         public static extern ProcessPriority GetPriorityClass(IntPtr hProcess);
+
+        [DllImport(kernel32, SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr OpenFileMapping(
+             FileMappingSecurity dwDesiredAccess,
+             [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle,
+             [MarshalAs(UnmanagedType.LPTStr)] string lpName);
+
+        [DllImport(kernel32, SetLastError = true)]
+        public static extern IntPtr MapViewOfFile(
+            IntPtr hFileMappingObject,
+            FileMappingSecurity dwDesiredAccess,
+            UInt32 dwFileOffsetHigh,
+            UInt32 dwFileOffsetLow,
+            UIntPtr dwNumberOfBytesToMap);
+
+        [DllImport(kernel32, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool UnmapViewOfFile(
+            IntPtr lpBaseAddress);
+
+        [DllImport(kernel32, SetLastError = true)]
+        public static extern IntPtr VirtualQuery(
+            IntPtr lpAddress,
+            out MEMORY_BASIC_INFORMATION32 lpBuffer,
+            IntPtr dwLength);
+
+        [DllImport(kernel32, SetLastError = true)]
+        public static extern IntPtr VirtualQuery(
+            IntPtr lpAddress,
+            out MEMORY_BASIC_INFORMATION64 lpBuffer,
+            IntPtr dwLength);
+
         #endregion
 
         #region ntdll

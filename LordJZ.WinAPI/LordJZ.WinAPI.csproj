@@ -154,6 +154,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileMappingSecurity.cs" />
+    <Compile Include="FileMapping.cs" />
+    <Compile Include="FileView.cs" />
+    <Compile Include="MemoryBasicInformation.cs" />
+    <Compile Include="MemoryProtection.cs" />
+    <Compile Include="MemoryState.cs" />
+    <Compile Include="MemoryType.cs" />
+    <Compile Include="Native\MEMORY_BASIC_INFORMATION32.cs" />
+    <Compile Include="Native\MEMORY_BASIC_INFORMATION64.cs" />
     <Compile Include="ProcessPriority.cs" />
     <Compile Include="DesktopWindowManager.cs" />
     <Compile Include="Handle.cs" />
