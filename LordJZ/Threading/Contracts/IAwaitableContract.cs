@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace LordJZ.Threading.Contracts
 {
+#if CONTRACTS_FULL
     [ContractClassFor(typeof(IAwaitable))]
     internal abstract class IAwaitableContract : IAwaitable
     {
@@ -37,4 +38,5 @@ namespace LordJZ.Threading.Contracts
             return null;
         }
     }
+#endif
 }
