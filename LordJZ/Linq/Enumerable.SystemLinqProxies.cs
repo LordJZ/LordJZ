@@ -140,5 +140,25 @@ namespace LordJZ.Linq
         {
             return System.Linq.Enumerable.ThenByDescending(source, keySelector, comparer);
         }
+
+	    public static IEnumerable<TResult> SelectMany<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, IEnumerable<TResult>> selector)
+	    {
+		    return System.Linq.Enumerable.SelectMany(source, selector);
+	    }
+
+        public static IEnumerable<TResult> SelectMany<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
+        {
+            return System.Linq.Enumerable.SelectMany(source, selector);
+        }
+        public static IEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
+        {
+            return System.Linq.Enumerable.SelectMany(source, collectionSelector, resultSelector);
+
+        }
+
+        public static IEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
+	    {
+		    return System.Linq.Enumerable.SelectMany(source, collectionSelector, resultSelector);
+	    }
     }
 }
