@@ -474,6 +474,10 @@ namespace LordJZ.WinAPI
         /// </param>
         public static void SetDpiAwareness(ProcessDpiAwareness awareness)
         {
+            // Avoid popular Access Denied exception.
+            if (Current.DpiAwareness == awareness)
+                return;
+
             UnsafeNativeMethods.SetProcessDpiAwareness(awareness)
                                .EnsureNoWin32Error();
         }
