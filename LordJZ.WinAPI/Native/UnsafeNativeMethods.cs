@@ -160,6 +160,9 @@ namespace LordJZ.WinAPI.Native
         [DllImport(user32)]
         internal static extern bool GetWindowPlacement(IntPtr hWnd, [Out] WindowPlacement lpwndpl);
 
+        [DllImport(user32)]
+        internal static extern bool IsZoomed(IntPtr hWnd);
+
         /// <devdoc>http://msdn.microsoft.com/en-us/library/windows/desktop/ms647636(v=vs.85).aspx</devdoc>
         [DllImport(user32)]
         internal static extern uint EnableMenuItem(IntPtr hMenu, uint itemId, uint uEnable);

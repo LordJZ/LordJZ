@@ -217,6 +217,11 @@ namespace LordJZ.WinAPI
             }
         }
 
+	    public bool Zoomed
+	    {
+		    get { return UnsafeNativeMethods.IsZoomed(this.Handle.Value); }
+	    }
+
         public Handle SystemMenu
         {
             get { return new Handle(UnsafeNativeMethods.GetSystemMenu(this.Handle.Value, false)); }
