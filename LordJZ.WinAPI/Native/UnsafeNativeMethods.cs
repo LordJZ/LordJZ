@@ -17,6 +17,7 @@ namespace LordJZ.WinAPI.Native
         internal const string ntdll = "ntdll";
         internal const string psapi = "psapi";
         internal const string shcore = "shcore"; // ShellScalingAPI.h
+        internal const string shell32 = "shell32";
 
         #region dwmapi
 
@@ -332,6 +333,15 @@ namespace LordJZ.WinAPI.Native
         [DllImport(shcore)]
         internal static extern int GetDpiForMonitor([In] IntPtr hMonitor, [In] int dpiType,
                                                     [Out] out uint dpiX, [Out] out uint dpiY);
+
+        #endregion
+
+        #region shell32
+
+        [DllImport(shell32, SetLastError = true)]
+        public static extern int SHGetKnownFolderPath(
+            [MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken,
+            out IntPtr ppszPath);
 
         #endregion
 

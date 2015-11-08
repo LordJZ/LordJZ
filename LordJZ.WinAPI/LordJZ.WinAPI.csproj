@@ -154,9 +154,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KnownFolders.cs" />
     <Compile Include="FileMappingSecurity.cs" />
     <Compile Include="FileMapping.cs" />
     <Compile Include="FileView.cs" />
+    <Compile Include="KnownFolder.cs" />
     <Compile Include="MemoryBasicInformation.cs" />
     <Compile Include="MemoryProtection.cs" />
     <Compile Include="MemoryState.cs" />
