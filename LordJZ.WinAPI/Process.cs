@@ -132,6 +132,11 @@ namespace LordJZ.WinAPI
             set { UnsafeNativeMethods.SetPriorityClass(m_handle.Value, value).EnsureNoWin32Error(); }
         }
 
+        public string ImagePath
+        {
+            get { return new ProcessModule(this, Handle.NullHandle).FileName; }
+        }
+
         #endregion
 
         #region Constructors
